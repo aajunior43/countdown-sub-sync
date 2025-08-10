@@ -61,11 +61,12 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-gradient-secondary">
+      <header className="relative border-b border-border bg-gradient-secondary overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-accent opacity-40 blur-2xl pointer-events-none" />
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-foreground bg-gradient-primary bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold text-foreground bg-gradient-primary bg-clip-text text-transparent animate-fade-in">
                 Minhas Assinaturas
               </h1>
               <p className="text-muted-foreground mt-1">
@@ -89,8 +90,8 @@ const Index = () => {
 
       <main className="container mx-auto px-4 py-8">
         {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-gradient-secondary border-border">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="bg-gradient-secondary border-border hover-scale animate-fade-in">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Total Mensal
@@ -104,7 +105,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-secondary border-border">
+          <Card className="bg-gradient-secondary border-border hover-scale animate-fade-in">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Assinaturas Ativas
@@ -118,7 +119,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-secondary border-border">
+          <Card className="bg-gradient-secondary border-border hover-scale animate-fade-in">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 Renovações (7 dias)
@@ -132,19 +133,6 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-secondary border-border">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Gasto Anual
-              </CardTitle>
-              <TrendingUp className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                R$ {(totalMonthlySpending * 12).toFixed(2)}
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Edit Form */}

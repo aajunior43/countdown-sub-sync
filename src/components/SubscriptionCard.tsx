@@ -57,7 +57,7 @@ export function SubscriptionCard({ subscription, onEdit, onDelete }: Subscriptio
   const totalDays = subscription.billingPeriod === 'mensal' ? 30 : 365;
 
   return (
-    <Card className="relative overflow-hidden border-border bg-gradient-secondary hover:shadow-elegant transition-all duration-300">
+    <Card className="relative overflow-hidden border-border bg-gradient-secondary hover:shadow-elegant transition-all duration-300 hover-scale animate-fade-in">
       <div className="absolute inset-0 bg-gradient-accent opacity-50" />
       <CardHeader className="relative z-10 pb-3">
         <div className="flex items-start justify-between">
