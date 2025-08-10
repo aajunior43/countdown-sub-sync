@@ -57,11 +57,16 @@ export function ExportImport({ subscriptions, onImport }: ExportImportProps) {
           throw new Error("Nenhuma assinatura válida encontrada no arquivo.");
         }
 
-        onImport(validSubscriptions);
+        const normalized = validSubscriptions.map((s) => ({
+          ...s,
+          billingPeriod: (s as any).billingPeriod ?? 'mensal',
+        }));
+
+        onImport(normalized);
         
         toast({
           title: "Importação concluída!",
-          description: `${validSubscriptions.length} assinaturas foram importadas com sucesso.`,
+          description: `${normalized.length} assinaturas foram importadas com sucesso.`,
         });
 
         if (validSubscriptions.length < importedData.length) {

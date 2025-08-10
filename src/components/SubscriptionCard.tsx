@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, DollarSign, Edit, Trash2 } from "lucide-react";
 import { Subscription } from "@/types/subscription";
 import { useState, useEffect } from "react";
+import { CircularCountdown } from "@/components/CircularCountdown";
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -48,10 +49,12 @@ export function SubscriptionCard({ subscription, onEdit, onDelete }: Subscriptio
 
   const getUrgencyColor = () => {
     if (daysUntilRenewal <= 0) return "destructive";
-    if (daysUntilRenewal <= 3) return "warning";
-    if (daysUntilRenewal <= 7) return "info";
-    return "success";
+    if (daysUntilRenewal <= 3) return "destructive";
+    if (daysUntilRenewal <= 7) return "default";
+    return "secondary";
   };
+
+  const totalDays = subscription.billingPeriod === 'mensal' ? 30 : 365;
 
   return (
     <Card className="relative overflow-hidden border-border bg-gradient-secondary hover:shadow-elegant transition-all duration-300">
@@ -87,34 +90,38 @@ export function SubscriptionCard({ subscription, onEdit, onDelete }: Subscriptio
         </div>
       </CardHeader>
       
-      <CardContent className="relative z-10 space-y-4">
-        <div className="flex items-center gap-2">
-          <DollarSign className="h-4 w-4 text-primary" />
-          <span className="font-medium text-foreground">
-            {subscription.currency} {subscription.price.toFixed(2)}
-          </span>
-        </div>
+      <CardContent className="relative z-10">
+        <div className="flex items-center gap-6">
+          <CircularCountdown totalDays={totalDays} remainingDays={daysUntilRenewal} />
 
-        <div className="flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-primary" />
-          <span className="text-sm text-muted-foreground">
-            Próxima cobrança: {new Date(subscription.renewalDate).toLocaleDateString('pt-BR')}
-          </span>
-        </div>
+          <div className="flex-1 space-y-3">
+            <div className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4 text-primary" />
+              <span className="font-medium text-foreground">
+                {subscription.currency} {subscription.price.toFixed(2)}
+              </span>
+              <Badge variant="outline" className="text-xs">
+                {subscription.billingPeriod === 'mensal' ? 'Mensal' : 'Anual'}
+              </Badge>
+            </div>
 
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Tempo restante:</span>
-            <Badge variant={getUrgencyColor() === "destructive" ? "destructive" : 
-                           getUrgencyColor() === "warning" ? "destructive" : "default"}>
-              {timeLeft}
-            </Badge>
+            <div className="flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-primary" />
+              <span className="text-sm text-muted-foreground">
+                Próxima cobrança: {new Date(subscription.renewalDate).toLocaleDateString('pt-BR')}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Tempo restante:</span>
+              <Badge variant={getUrgencyColor()}>{timeLeft}</Badge>
+            </div>
+
+            {subscription.description && (
+              <p className="text-sm text-muted-foreground">{subscription.description}</p>
+            )}
           </div>
         </div>
-
-        {subscription.description && (
-          <p className="text-sm text-muted-foreground">{subscription.description}</p>
-        )}
       </CardContent>
     </Card>
   );

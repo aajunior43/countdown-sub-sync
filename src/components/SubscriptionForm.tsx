@@ -24,6 +24,7 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
     renewalDate: editingSubscription?.renewalDate || "",
     category: editingSubscription?.category || "",
     description: editingSubscription?.description || "",
+    billingPeriod: editingSubscription?.billingPeriod || 'mensal',
   });
   const { toast } = useToast();
 
@@ -38,21 +39,41 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
     "Outros"
   ];
 
-  const currencies = ["R$", "US$", "€", "£"];
+const currencies = ["R$", "US$", "€", "£"];
+
+  const formatDateTimeLocal = (date: Date) => {
+    const pad = (n: number) => n.toString().padStart(2, '0');
+    const yyyy = date.getFullYear();
+    const mm = pad(date.getMonth() + 1);
+    const dd = pad(date.getDate());
+    const hh = pad(date.getHours());
+    const mi = pad(date.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.price || !formData.renewalDate || !formData.category) {
+    if (!formData.name || !formData.price || !formData.category || !formData.billingPeriod) {
       toast({
         title: "Erro",
-        description: "Por favor, preencha todos os campos obrigatórios.",
+        description: "Por favor, preencha os campos obrigatórios.",
         variant: "destructive",
       });
       return;
     }
 
-    onSubmit(formData);
+    let submission: SubscriptionFormData = { ...formData };
+
+    if (!formData.renewalDate) {
+      const now = new Date();
+      const daysToAdd = formData.billingPeriod === 'mensal' ? 30 : 365;
+      const ms = daysToAdd * 24 * 60 * 60 * 1000;
+      const next = new Date(now.getTime() + ms);
+      submission.renewalDate = formatDateTimeLocal(next);
+    }
+
+    onSubmit(submission);
     setFormData({
       name: "",
       price: 0,
@@ -60,6 +81,7 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
       renewalDate: "",
       category: "",
       description: "",
+      billingPeriod: 'mensal',
     });
     setOpen(false);
     
@@ -102,6 +124,19 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
                       {category}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="billingPeriod">Periodicidade *</Label>
+              <Select value={formData.billingPeriod} onValueChange={(value) => setFormData({ ...formData, billingPeriod: value as 'mensal' | 'anual' })}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Selecione a periodicidade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mensal">Mensal (30 dias)</SelectItem>
+                  <SelectItem value="anual">Anual (365 dias)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -205,6 +240,19 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
                       {category}
                     </SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="billingPeriod">Periodicidade *</Label>
+              <Select value={formData.billingPeriod} onValueChange={(value) => setFormData({ ...formData, billingPeriod: value as 'mensal' | 'anual' })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione a periodicidade" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mensal">Mensal (30 dias)</SelectItem>
+                  <SelectItem value="anual">Anual (365 dias)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
