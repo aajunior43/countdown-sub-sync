@@ -175,7 +175,7 @@ All colors MUST be HSL.
   }
 
   .stats-card {
-    @apply card-modern hover:scale-[1.02] hover:border-primary/20 group;
+    @apply card-modern hover:scale-[1.02] hover:border-primary/20;
   }
 
   .icon-large {
