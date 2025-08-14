@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { SubscriptionCard } from "@/components/SubscriptionCard";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
-import { SubscriptionFilters } from "@/components/SubscriptionFilters";
-import { AnalyticsChart } from "@/components/AnalyticsChart";
+
+
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { TelegramBackup } from "@/components/TelegramBackup";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExportImport } from "@/components/ExportImport";
 import { Subscription, SubscriptionFormData } from "@/types/subscription";
-import { CreditCard, DollarSign, Calendar, TrendingUp, Settings } from "lucide-react";
+import { CreditCard, DollarSign, Calendar, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useLocalStorage from "@/hooks/use-local-storage";
@@ -16,16 +16,10 @@ import { useNotifications } from "@/hooks/use-notifications";
 
 const Index = () => {
   const [subscriptions, setSubscriptions] = useLocalStorage<Subscription[]>('subscriptions', []);
-  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([]);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
 
   // Inicializar sistema de notificações
   useNotifications(subscriptions);
-
-  // Inicializa as assinaturas filtradas quando as assinaturas mudam
-  useEffect(() => {
-    setFilteredSubscriptions(subscriptions);
-  }, [subscriptions]);
 
   // Generate unique ID for new subscriptions
   const generateId = () => {
@@ -205,14 +199,10 @@ const Index = () => {
           </div>
         ) : (
           <Tabs defaultValue="subscriptions" className="space-y-6">
-             <TabsList className="grid w-full grid-cols-3">
+             <TabsList className="grid w-full grid-cols-2">
                <TabsTrigger value="subscriptions" className="flex items-center gap-2">
                  <CreditCard className="h-4 w-4" />
                  Assinaturas
-               </TabsTrigger>
-               <TabsTrigger value="analytics" className="flex items-center gap-2">
-                 <TrendingUp className="h-4 w-4" />
-                 Estatísticas
                </TabsTrigger>
                <TabsTrigger value="settings" className="flex items-center gap-2">
                  <Settings className="h-4 w-4" />
@@ -221,22 +211,16 @@ const Index = () => {
              </TabsList>
 
             <TabsContent value="subscriptions" className="space-y-6">
-              {/* Filters Section */}
-              <SubscriptionFilters
-                subscriptions={subscriptions}
-                onFilteredSubscriptions={setFilteredSubscriptions}
-              />
-
               {/* Subscriptions Grid */}
               <section className="space-y-6">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-semibold text-foreground">Suas Assinaturas</h2>
                   <span className="text-sm text-muted-foreground">
-                    {filteredSubscriptions.length} de {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
+                    {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
                   </span>
                 </div>
                 
-                {filteredSubscriptions.length === 0 ? (
+                {subscriptions.length === 0 ? (
                   <div className="empty-state">
                     <div className="w-20 h-20 bg-purple-gradient rounded-2xl flex items-center justify-center mb-6 shadow-purple-glow animate-pulse-glow">
                       <CreditCard className="h-10 w-10 text-white" />
@@ -245,12 +229,12 @@ const Index = () => {
                       Nenhuma assinatura encontrada
                     </h3>
                     <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-                      Tente ajustar os filtros para encontrar suas assinaturas.
+                      Adicione sua primeira assinatura para começar a gerenciar seus gastos mensais.
                     </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {filteredSubscriptions.map((subscription) => (
+                    {subscriptions.map((subscription) => (
                       <SubscriptionCard
                         key={subscription.id}
                         subscription={subscription}
@@ -262,10 +246,6 @@ const Index = () => {
                 )}
               </section>
             </TabsContent>
-
-            <TabsContent value="analytics" className="space-y-6">
-               <AnalyticsChart subscriptions={subscriptions} />
-             </TabsContent>
 
              <TabsContent value="settings" className="space-y-6">
                 <NotificationSettings subscriptions={subscriptions} />

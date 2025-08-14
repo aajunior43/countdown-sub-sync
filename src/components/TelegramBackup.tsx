@@ -22,12 +22,13 @@ interface TelegramConfig {
 export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
   const [config, setConfig] = useLocalStorage<TelegramConfig>('telegramConfig', {
     botToken: '8275048279:AAFE4DKypfm6BpC_O_irY08gIsGA7EiqdPE',
-    chatId: '+5544991082795'
+    chatId: '942288759'
   });
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [backupData, setBackupData] = useState('');
+  const [isGettingChatId, setIsGettingChatId] = useState(false);
   const { toast } = useToast();
 
   // Gerar dados de backup
@@ -86,12 +87,96 @@ export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
     return text;
   };
 
-  // Enviar backup via Telegram
-  const sendTelegramBackup = async () => {
+  // Buscar Chat ID automaticamente
+  const getChatId = async () => {
     if (!config.botToken) {
       toast({
         title: "Erro",
-        description: "Configure o token do bot do Telegram primeiro.",
+        description: "Configure o token do bot primeiro.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGettingChatId(true);
+    
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${config.botToken}/getUpdates`);
+      
+      if (!response.ok) {
+        throw new Error('Erro ao buscar atualizações');
+      }
+      
+      const data = await response.json();
+      
+      if (data.result && data.result.length > 0) {
+        // Pegar o chat ID da mensagem mais recente
+        const lastMessage = data.result[data.result.length - 1];
+        const chatId = lastMessage.message?.chat?.id || lastMessage.message?.from?.id;
+        
+        if (chatId) {
+          setConfig({ ...config, chatId: chatId.toString() });
+          toast({
+            title: "✅ Chat ID encontrado!",
+            description: `Chat ID: ${chatId}`
+          });
+        } else {
+          toast({
+            title: "⚠️ Nenhuma mensagem encontrada",
+            description: "Envie uma mensagem para o bot primeiro e tente novamente.",
+            variant: "destructive"
+          });
+        }
+      } else {
+        toast({
+          title: "⚠️ Nenhuma mensagem encontrada",
+          description: "Envie uma mensagem para o bot primeiro e tente novamente.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Erro ao buscar Chat ID:', error);
+      toast({
+        title: "Erro",
+        description: "Erro ao buscar Chat ID. Verifique o token do bot.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsGettingChatId(false);
+    }
+  };
+
+  // Verificar se o bot pode acessar o chat
+  const testBotAccess = async () => {
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${config.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: config.chatId,
+          text: '🤖 Teste de conexão do bot'
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`${errorData.description || 'Erro desconhecido'}`);
+      }
+      
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // Enviar backup via Telegram
+  const sendTelegramBackup = async () => {
+    if (!config.botToken || !config.chatId) {
+      toast({
+        title: "Erro",
+        description: "Configure o token do bot e o chat ID do Telegram primeiro.",
         variant: "destructive"
       });
       return;
@@ -100,8 +185,30 @@ export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
     setIsSending(true);
     
     try {
+      // Primeiro, testar se o bot pode acessar o chat
+      await testBotAccess();
+      
       const jsonData = generateBackupData();
       const textData = generateReadableText();
+      
+      // Enviar texto legível primeiro (mais simples)
+      const textResponse = await fetch(`https://api.telegram.org/bot${config.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: config.chatId,
+          text: textData,
+          parse_mode: 'HTML'
+        })
+      });
+      
+      if (!textResponse.ok) {
+        const errorData = await textResponse.json();
+        console.error('Erro da API Telegram (sendMessage):', errorData);
+        throw new Error(`Erro ao enviar texto: ${textResponse.status} - ${errorData.description}`);
+      }
       
       // Enviar arquivo JSON
       const jsonBlob = new Blob([jsonData], { type: 'application/json' });
@@ -116,25 +223,11 @@ export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
       });
       
       if (!fileResponse.ok) {
-        throw new Error('Erro ao enviar arquivo JSON');
+        const errorData = await fileResponse.json();
+        console.error('Erro da API Telegram (sendDocument):', errorData);
+        throw new Error(`Erro ao enviar arquivo JSON: ${fileResponse.status} - ${errorData.description}`);
       }
-      
-      // Enviar texto legível
-      const textResponse = await fetch(`https://api.telegram.org/bot${config.botToken}/sendMessage`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: config.chatId,
-          text: textData,
-          parse_mode: 'HTML'
-        })
-      });
-      
-      if (!textResponse.ok) {
-        throw new Error('Erro ao enviar texto');
-      }
+
       
       toast({
         title: "✅ Backup enviado!",
@@ -143,9 +236,10 @@ export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
       
     } catch (error) {
       console.error('Erro ao enviar backup:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
       toast({
         title: "Erro",
-        description: "Erro ao enviar backup. Verifique o token e tente novamente.",
+        description: `Erro ao enviar backup: ${errorMessage}`,
         variant: "destructive"
       });
     } finally {
@@ -214,16 +308,32 @@ export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="chatId">Número/Chat ID</Label>
-                  <Input
-                    id="chatId"
-                    placeholder="+5544991082495"
-                    value={config.chatId}
-                    onChange={(e) => setConfig({ ...config, chatId: e.target.value })}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Seu número de telefone ou chat ID do Telegram
-                  </p>
+                  <Label htmlFor="chatId">Chat ID</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="chatId"
+                      placeholder="123456789"
+                      value={config.chatId}
+                      onChange={(e) => setConfig({ ...config, chatId: e.target.value })}
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={getChatId}
+                      disabled={isGettingChatId || !config.botToken}
+                      className="whitespace-nowrap"
+                    >
+                      {isGettingChatId ? 'Buscando...' : 'Buscar ID'}
+                    </Button>
+                  </div>
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <p><strong>Como obter seu Chat ID:</strong></p>
+                    <p>1. Envie uma mensagem para seu bot</p>
+                    <p>2. Clique em "Buscar ID" para encontrar automaticamente</p>
+                    <p>3. Ou insira manualmente se souber o número</p>
+                  </div>
                 </div>
                 <Button 
                   onClick={() => setIsConfigOpen(false)}
@@ -281,7 +391,7 @@ export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
           {/* Enviar Backup */}
           <Button 
             onClick={sendTelegramBackup}
-            disabled={isSending || !config.botToken}
+            disabled={isSending || !config.botToken || !config.chatId}
             className="flex items-center gap-2"
           >
             <Send className="h-4 w-4" />
@@ -291,10 +401,10 @@ export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
 
         {/* Status */}
         <div className="text-sm text-muted-foreground">
-          {config.botToken ? (
+          {config.botToken && config.chatId ? (
             <p className="text-green-600">✅ Bot configurado - Pronto para backup</p>
           ) : (
-            <p className="text-yellow-600">⚠️ Configure o bot do Telegram primeiro</p>
+            <p className="text-yellow-600">⚠️ Configure o bot e chat ID do Telegram primeiro</p>
           )}
           <p>Destino: {config.chatId}</p>
           <p>Total de assinaturas: {subscriptions.length}</p>
