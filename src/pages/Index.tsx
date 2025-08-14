@@ -59,21 +59,21 @@ const Index = () => {
   }).length;
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="relative border-b border-border bg-gradient-secondary overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-accent opacity-40 blur-2xl pointer-events-none" />
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground bg-gradient-primary bg-clip-text text-transparent animate-fade-in">
+    <div className="min-h-screen bg-background bg-bg-pattern">
+      {/* Modern Header */}
+      <header className="relative border-b border-border/50 bg-card-gradient overflow-hidden backdrop-blur-sm">
+        <div className="absolute inset-0 bg-purple-gradient opacity-10 pointer-events-none" />
+        <div className="container mx-auto px-6 py-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-2">
+              <h1 className="text-4xl lg:text-5xl font-bold text-foreground bg-purple-gradient bg-clip-text text-transparent animate-fade-in">
                 Minhas Assinaturas
               </h1>
-              <p className="text-muted-foreground mt-1">
-                Gerencie e acompanhe todas as suas assinaturas em um só lugar
+              <p className="text-muted-foreground text-lg max-w-2xl">
+                Gerencie e acompanhe todas as suas assinaturas em um só lugar com controle total dos vencimentos
               </p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <ExportImport
                 subscriptions={subscriptions}
                 onImport={handleImportSubscriptions}
@@ -88,52 +88,70 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-gradient-secondary border-border hover-scale animate-fade-in">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Total Mensal
-              </CardTitle>
-              <DollarSign className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                R$ {totalMonthlySpending.toFixed(2)}
-              </div>
-            </CardContent>
-          </Card>
+      <main className="container mx-auto px-6 py-10">
+        {/* Enhanced Statistics Cards */}
+        <section className="space-y-6">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-semibold text-foreground">Visão Geral</h2>
+            <p className="text-muted-foreground">Acompanhe suas métricas importantes</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="stats-card">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                  Total Mensal
+                </CardTitle>
+                <DollarSign className="icon-large" />
+              </CardHeader>
+              <CardContent className="space-y-1">
+                <div className="text-3xl font-bold text-foreground">
+                  R$ {totalMonthlySpending.toFixed(2)}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Gastos recorrentes mensais
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="bg-gradient-secondary border-border hover-scale animate-fade-in">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Assinaturas Ativas
-              </CardTitle>
-              <CreditCard className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {activeSubscriptions}
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="stats-card">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                  Assinaturas Ativas
+                </CardTitle>
+                <CreditCard className="icon-large" />
+              </CardHeader>
+              <CardContent className="space-y-1">
+                <div className="text-3xl font-bold text-foreground">
+                  {activeSubscriptions}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Serviços ativos atualmente
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card className="bg-gradient-secondary border-border hover-scale animate-fade-in">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                Renovações (7 dias)
-              </CardTitle>
-              <Calendar className="h-4 w-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">
-                {upcomingRenewals}
-              </div>
-            </CardContent>
-          </Card>
+            <Card className="stats-card">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                  Renovações (7 dias)
+                </CardTitle>
+                <Calendar className="icon-large" />
+              </CardHeader>
+              <CardContent className="space-y-1">
+                <div className="text-3xl font-bold text-foreground">
+                  {upcomingRenewals}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Vencimentos próximos
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
 
-        </div>
+        {/* Section Divider */}
+        <div className="section-divider" />
 
         {/* Edit Form */}
         {editingSubscription && (
@@ -146,33 +164,51 @@ const Index = () => {
           </div>
         )}
 
-        {/* Subscriptions Grid */}
-        {subscriptions.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="bg-gradient-accent rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <CreditCard className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              Nenhuma assinatura cadastrada
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              Comece adicionando sua primeira assinatura para acompanhar os vencimentos.
-            </p>
+        {/* Subscriptions Section */}
+        <section className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-foreground">Suas Assinaturas</h2>
+            {subscriptions.length > 0 && (
+              <span className="text-sm text-muted-foreground">
+                {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
+              </span>
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subscriptions
-              .sort((a, b) => new Date(a.renewalDate).getTime() - new Date(b.renewalDate).getTime())
-              .map((subscription) => (
-                <SubscriptionCard
-                  key={subscription.id}
-                  subscription={subscription}
-                  onEdit={setEditingSubscription}
-                  onDelete={handleDeleteSubscription}
+          
+          {subscriptions.length === 0 ? (
+            <div className="empty-state">
+              <div className="w-20 h-20 bg-purple-gradient rounded-2xl flex items-center justify-center mb-6 shadow-purple-glow animate-pulse-glow">
+                <CreditCard className="h-10 w-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-foreground mb-3">
+                Nenhuma assinatura cadastrada
+              </h3>
+              <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+                Comece adicionando sua primeira assinatura para acompanhar os vencimentos de forma inteligente.
+              </p>
+              <div className="pt-4">
+                <SubscriptionForm
+                  onSubmit={handleAddSubscription}
+                  editingSubscription={editingSubscription}
+                  onCancel={() => setEditingSubscription(null)}
                 />
-              ))}
-          </div>
-        )}
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {subscriptions
+                .sort((a, b) => new Date(a.renewalDate).getTime() - new Date(b.renewalDate).getTime())
+                .map((subscription) => (
+                  <SubscriptionCard
+                    key={subscription.id}
+                    subscription={subscription}
+                    onEdit={setEditingSubscription}
+                    onDelete={handleDeleteSubscription}
+                  />
+                ))}
+            </div>
+          )}
+        </section>
       </main>
     </div>
   );

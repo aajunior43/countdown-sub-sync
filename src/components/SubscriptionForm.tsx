@@ -97,8 +97,11 @@ const currencies = ["R$", "US$", "€", "£"];
 
   if (isEditing) {
     return (
-      <div className="space-y-4 p-6 bg-gradient-secondary rounded-lg border border-border">
-        <h3 className="text-lg font-semibold text-foreground">Editar Assinatura</h3>
+      <div className="card-modern space-y-6 p-8">
+        <div className="text-center space-y-2">
+          <h3 className="text-2xl font-bold text-foreground">Editar Assinatura</h3>
+          <p className="text-muted-foreground">Atualize as informações da sua assinatura</p>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -191,11 +194,11 @@ const currencies = ["R$", "US$", "€", "£"];
             />
           </div>
 
-          <div className="flex gap-2">
-            <Button type="submit" className="bg-gradient-primary hover:opacity-90">
+          <div className="flex gap-3 pt-4">
+            <Button type="submit" className="gradient-button flex-1 py-3 text-base font-semibold">
               Salvar Alterações
             </Button>
-            <Button type="button" variant="outline" onClick={onCancel}>
+            <Button type="button" variant="outline" onClick={onCancel} className="px-8 py-3">
               Cancelar
             </Button>
           </div>
@@ -207,14 +210,15 @@ const currencies = ["R$", "US$", "€", "£"];
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-primary hover:opacity-90 shadow-glow">
-          <Plus className="h-4 w-4 mr-2" />
+        <Button className="gradient-button py-3 px-6 text-base font-semibold shadow-purple-glow hover:scale-[1.02] transition-all duration-300">
+          <Plus className="h-5 w-5 mr-2" />
           Nova Assinatura
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl bg-background border-border">
-        <DialogHeader>
-          <DialogTitle className="text-foreground">Adicionar Nova Assinatura</DialogTitle>
+      <DialogContent className="max-w-3xl card-modern border-primary/20">
+        <DialogHeader className="text-center space-y-3 pb-6">
+          <DialogTitle className="text-2xl font-bold text-foreground">Adicionar Nova Assinatura</DialogTitle>
+          <p className="text-muted-foreground">Cadastre uma nova assinatura para acompanhar seus vencimentos</p>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -304,7 +308,7 @@ const currencies = ["R$", "US$", "€", "£"];
             />
           </div>
 
-          <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90">
+          <Button type="submit" className="w-full gradient-button py-4 text-lg font-semibold">
             Adicionar Assinatura
           </Button>
         </form>

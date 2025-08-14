@@ -94,11 +94,11 @@ export function ExportImport({ subscriptions, onImport }: ExportImportProps) {
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4">
+    <div className="flex flex-col sm:flex-row gap-3">
       <Button
         onClick={exportToJSON}
         variant="outline"
-        className="flex items-center gap-2 hover:bg-accent"
+        className="flex items-center gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 py-3 px-5 font-medium"
         disabled={subscriptions.length === 0}
       >
         <Download className="h-4 w-4" />
@@ -120,7 +120,7 @@ export function ExportImport({ subscriptions, onImport }: ExportImportProps) {
         <Button
           onClick={() => fileInputRef.current?.click()}
           variant="outline"
-          className="flex items-center gap-2 hover:bg-accent"
+          className="flex items-center gap-2 hover:bg-primary/10 hover:text-primary hover:border-primary/30 transition-all duration-300 py-3 px-5 font-medium"
         >
           <Upload className="h-4 w-4" />
           Importar JSON

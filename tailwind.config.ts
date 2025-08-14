@@ -139,11 +139,23 @@ export default {
 			backgroundImage: {
 				'gradient-primary': 'var(--gradient-primary)',
 				'gradient-secondary': 'var(--gradient-secondary)',
-				'gradient-accent': 'var(--gradient-accent)'
+				'gradient-accent': 'var(--gradient-accent)',
+				'purple-gradient': 'var(--purple-gradient)',
+				'card-gradient': 'var(--card-gradient)',
+				'bg-pattern': 'var(--bg-pattern)'
 			},
 			boxShadow: {
 				'elegant': 'var(--shadow-elegant)',
-				'glow': 'var(--shadow-glow)'
+				'glow': 'var(--shadow-glow)',
+				'card': 'var(--shadow-card)',
+				'elevated': 'var(--shadow-elevated)',
+				'purple-glow': 'var(--shadow-purple-glow)'
+			},
+			colors: {
+				...this.theme.extend.colors,
+				'primary-light': 'hsl(var(--primary-light))',
+				'primary-dark': 'hsl(var(--primary-dark))',
+				'accent-purple': 'hsl(var(--accent-purple))'
 			}
 		}
 	},
