@@ -1,14 +1,30 @@
 import { useState, useEffect } from "react";
 import { SubscriptionCard } from "@/components/SubscriptionCard";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
+import { SubscriptionFilters } from "@/components/SubscriptionFilters";
+import { AnalyticsChart } from "@/components/AnalyticsChart";
+import { NotificationSettings } from "@/components/NotificationSettings";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExportImport } from "@/components/ExportImport";
 import { Subscription, SubscriptionFormData } from "@/types/subscription";
-import { CreditCard, DollarSign, Calendar, TrendingUp } from "lucide-react";
+import { CreditCard, DollarSign, Calendar, TrendingUp, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useLocalStorage from "@/hooks/use-local-storage";
+import { useNotifications } from "@/hooks/use-notifications";
 
 const Index = () => {
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [subscriptions, setSubscriptions] = useLocalStorage<Subscription[]>('subscriptions', []);
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState<Subscription[]>([]);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
+
+  // Inicializar sistema de notificações
+  useNotifications(subscriptions);
+
+  // Inicializa as assinaturas filtradas quando as assinaturas mudam
+  useEffect(() => {
+    setFilteredSubscriptions(subscriptions);
+  }, [subscriptions]);
 
   // Generate unique ID for new subscriptions
   const generateId = () => {
@@ -45,7 +61,12 @@ const Index = () => {
 
   // Import subscriptions
   const handleImportSubscriptions = (importedSubscriptions: Subscription[]) => {
-    setSubscriptions(importedSubscriptions);
+    // Adiciona IDs únicos para assinaturas importadas que não possuem
+    const subscriptionsWithIds = importedSubscriptions.map(sub => ({
+      ...sub,
+      id: sub.id || generateId()
+    }));
+    setSubscriptions(subscriptionsWithIds);
   };
 
   // Calculate statistics
@@ -74,6 +95,7 @@ const Index = () => {
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
+              <ThemeToggle />
               <ExportImport
                 subscriptions={subscriptions}
                 onImport={handleImportSubscriptions}
@@ -164,51 +186,95 @@ const Index = () => {
           </div>
         )}
 
-        {/* Subscriptions Section */}
-        <section className="space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-semibold text-foreground">Suas Assinaturas</h2>
-            {subscriptions.length > 0 && (
-              <span className="text-sm text-muted-foreground">
-                {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
-              </span>
-            )}
+        {/* Main Content with Tabs */}
+        {subscriptions.length === 0 ? (
+          <div className="empty-state">
+            <div className="w-20 h-20 bg-purple-gradient rounded-2xl flex items-center justify-center mb-6 shadow-purple-glow animate-pulse-glow">
+              <CreditCard className="h-10 w-10 text-white" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground mb-3">
+              Nenhuma assinatura cadastrada
+            </h3>
+            <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+              Comece adicionando sua primeira assinatura para acompanhar os vencimentos de forma inteligente.
+            </p>
+            <div className="pt-4">
+              <SubscriptionForm
+                onSubmit={handleAddSubscription}
+                editingSubscription={editingSubscription}
+                onCancel={() => setEditingSubscription(null)}
+              />
+            </div>
           </div>
-          
-          {subscriptions.length === 0 ? (
-            <div className="empty-state">
-              <div className="w-20 h-20 bg-purple-gradient rounded-2xl flex items-center justify-center mb-6 shadow-purple-glow animate-pulse-glow">
-                <CreditCard className="h-10 w-10 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-foreground mb-3">
-                Nenhuma assinatura cadastrada
-              </h3>
-              <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-                Comece adicionando sua primeira assinatura para acompanhar os vencimentos de forma inteligente.
-              </p>
-              <div className="pt-4">
-                <SubscriptionForm
-                  onSubmit={handleAddSubscription}
-                  editingSubscription={editingSubscription}
-                  onCancel={() => setEditingSubscription(null)}
-                />
-              </div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {subscriptions
-                .sort((a, b) => new Date(a.renewalDate).getTime() - new Date(b.renewalDate).getTime())
-                .map((subscription) => (
-                  <SubscriptionCard
-                    key={subscription.id}
-                    subscription={subscription}
-                    onEdit={setEditingSubscription}
-                    onDelete={handleDeleteSubscription}
-                  />
-                ))}
-            </div>
-          )}
-        </section>
+        ) : (
+          <Tabs defaultValue="subscriptions" className="space-y-6">
+             <TabsList className="grid w-full grid-cols-3">
+               <TabsTrigger value="subscriptions" className="flex items-center gap-2">
+                 <CreditCard className="h-4 w-4" />
+                 Assinaturas
+               </TabsTrigger>
+               <TabsTrigger value="analytics" className="flex items-center gap-2">
+                 <TrendingUp className="h-4 w-4" />
+                 Estatísticas
+               </TabsTrigger>
+               <TabsTrigger value="settings" className="flex items-center gap-2">
+                 <Settings className="h-4 w-4" />
+                 Configurações
+               </TabsTrigger>
+             </TabsList>
+
+            <TabsContent value="subscriptions" className="space-y-6">
+              {/* Filters Section */}
+              <SubscriptionFilters
+                subscriptions={subscriptions}
+                onFilteredSubscriptions={setFilteredSubscriptions}
+              />
+
+              {/* Subscriptions Grid */}
+              <section className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-semibold text-foreground">Suas Assinaturas</h2>
+                  <span className="text-sm text-muted-foreground">
+                    {filteredSubscriptions.length} de {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
+                  </span>
+                </div>
+                
+                {filteredSubscriptions.length === 0 ? (
+                  <div className="empty-state">
+                    <div className="w-20 h-20 bg-purple-gradient rounded-2xl flex items-center justify-center mb-6 shadow-purple-glow animate-pulse-glow">
+                      <CreditCard className="h-10 w-10 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground mb-3">
+                      Nenhuma assinatura encontrada
+                    </h3>
+                    <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+                      Tente ajustar os filtros para encontrar suas assinaturas.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredSubscriptions.map((subscription) => (
+                      <SubscriptionCard
+                        key={subscription.id}
+                        subscription={subscription}
+                        onEdit={setEditingSubscription}
+                        onDelete={handleDeleteSubscription}
+                      />
+                    ))}
+                  </div>
+                )}
+              </section>
+            </TabsContent>
+
+            <TabsContent value="analytics" className="space-y-6">
+               <AnalyticsChart subscriptions={subscriptions} />
+             </TabsContent>
+
+             <TabsContent value="settings" className="space-y-6">
+               <NotificationSettings subscriptions={subscriptions} />
+             </TabsContent>
+           </Tabs>
+        )}
       </main>
     </div>
   );
