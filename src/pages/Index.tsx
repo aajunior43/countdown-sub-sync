@@ -4,6 +4,7 @@ import { SubscriptionForm } from "@/components/SubscriptionForm";
 import { SubscriptionFilters } from "@/components/SubscriptionFilters";
 import { AnalyticsChart } from "@/components/AnalyticsChart";
 import { NotificationSettings } from "@/components/NotificationSettings";
+import { TelegramBackup } from "@/components/TelegramBackup";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExportImport } from "@/components/ExportImport";
 import { Subscription, SubscriptionFormData } from "@/types/subscription";
@@ -90,9 +91,7 @@ const Index = () => {
               <h1 className="text-4xl lg:text-5xl font-bold text-foreground bg-purple-gradient bg-clip-text text-transparent animate-fade-in">
                 Minhas Assinaturas
               </h1>
-              <p className="text-muted-foreground text-lg max-w-2xl">
-                Gerencie e acompanhe todas as suas assinaturas em um só lugar com controle total dos vencimentos
-              </p>
+
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <ThemeToggle />
@@ -195,9 +194,7 @@ const Index = () => {
             <h3 className="text-2xl font-bold text-foreground mb-3">
               Nenhuma assinatura cadastrada
             </h3>
-            <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
-              Comece adicionando sua primeira assinatura para acompanhar os vencimentos de forma inteligente.
-            </p>
+            
             <div className="pt-4">
               <SubscriptionForm
                 onSubmit={handleAddSubscription}
@@ -271,11 +268,23 @@ const Index = () => {
              </TabsContent>
 
              <TabsContent value="settings" className="space-y-6">
-               <NotificationSettings subscriptions={subscriptions} />
-             </TabsContent>
+                <NotificationSettings subscriptions={subscriptions} />
+                <TelegramBackup subscriptions={subscriptions} />
+              </TabsContent>
            </Tabs>
         )}
       </main>
+      
+      {/* Footer */}
+      <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm mt-16">
+        <div className="container mx-auto px-6 py-6">
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+              DEV ALEKSANDRO ALVES
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
