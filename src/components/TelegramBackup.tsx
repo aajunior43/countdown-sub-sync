@@ -22,7 +22,7 @@ interface TelegramConfig {
 export function TelegramBackup({ subscriptions }: TelegramBackupProps) {
   const [config, setConfig] = useLocalStorage<TelegramConfig>('telegramConfig', {
     botToken: '8275048279:AAFE4DKypfm6BpC_O_irY08gIsGA7EiqdPE',
-    chatId: '+5544991082495'
+    chatId: '+5544991082795'
   });
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [isBackupOpen, setIsBackupOpen] = useState(false);
