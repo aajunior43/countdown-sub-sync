@@ -21,6 +21,20 @@ const Index = () => {
   // Inicializar sistema de notificações
   useNotifications(subscriptions);
 
+  // Função para restaurar backup
+  const handleRestoreBackup = (restoredSubscriptions: Subscription[]) => {
+    setSubscriptions(restoredSubscriptions);
+  };
+
+  // Função para adicionar assinatura via Telegram
+  const handleAddSubscriptionFromTelegram = (subscriptionData: Omit<Subscription, 'id'>) => {
+    const newSubscription: Subscription = {
+      ...subscriptionData,
+      id: generateId(),
+    };
+    setSubscriptions(prev => [...prev, newSubscription]);
+  };
+
   // Generate unique ID for new subscriptions
   const generateId = () => {
     return `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -249,7 +263,11 @@ const Index = () => {
 
              <TabsContent value="settings" className="space-y-6">
                 <NotificationSettings subscriptions={subscriptions} />
-                <TelegramBackup subscriptions={subscriptions} />
+                <TelegramBackup 
+                  subscriptions={subscriptions} 
+                  onRestoreBackup={handleRestoreBackup}
+                  onAddSubscription={handleAddSubscriptionFromTelegram}
+                />
               </TabsContent>
            </Tabs>
         )}
