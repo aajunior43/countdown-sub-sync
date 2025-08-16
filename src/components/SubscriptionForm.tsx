@@ -54,7 +54,7 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
     return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
   };
 
-  // Função para formatar valor como moeda brasileira
+  // Função para formatar valor como moeda brasileira (em centavos)
   const formatCurrency = (value: string) => {
     // Remove tudo que não é dígito
     const numbers = value.replace(/\D/g, '');
@@ -65,26 +65,28 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
     // Converte para centavos
     const cents = parseInt(numbers);
     
-    // Formata como moeda (divide por 100 para ter centavos)
-    const formatted = (cents / 100).toLocaleString('pt-BR', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
+    // Formata como moeda brasileira com vírgula
+    const reais = Math.floor(cents / 100);
+    const centavos = cents % 100;
     
-    return formatted;
+    // Formata com separadores brasileiros
+    const formattedReais = reais.toLocaleString('pt-BR');
+    const formattedCentavos = centavos.toString().padStart(2, '0');
+    
+    return `${formattedReais},${formattedCentavos}`;
   };
 
-  // Função para converter valor formatado para número
+  // Função para converter valor formatado para centavos
   const parseCurrency = (value: string): number => {
     if (!value) return 0;
-    // Remove pontos e substitui vírgula por ponto
-    const cleanValue = value.replace(/\./g, '').replace(',', '.');
-    return parseFloat(cleanValue) || 0;
+    // Remove pontos e substitui vírgula por nada para obter centavos
+    const cleanValue = value.replace(/\./g, '').replace(',', '');
+    return parseInt(cleanValue) || 0;
   };
 
   // Estado para o valor formatado
   const [formattedPrice, setFormattedPrice] = useState<string>(
-    editingSubscription?.price ? formatCurrency(editingSubscription.price.toString().replace('.', '')) : ''
+    editingSubscription?.price ? formatCurrency((editingSubscription.price * 100).toString()) : ''
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -176,7 +178,8 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
       // Limpar e validar dados
       submission.name = submission.name.trim();
       submission.description = submission.description?.trim() || "";
-      submission.price = Number(submission.price);
+      // Converter centavos para reais (dividir por 100)
+      submission.price = Number(submission.price) / 100;
 
       await onSubmit(submission);
       
