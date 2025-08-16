@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, Upload, MessageCircle, Clipboard } from "lucide-react";
+import { Download, Upload, Clipboard } from "lucide-react";
 import { Subscription } from "@/types/subscription";
 import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
@@ -96,19 +96,7 @@ export function ExportImport({ subscriptions, onImport }: ExportImportProps) {
     }
   };
 
-  const exportToWhatsApp = () => {
-    const dataStr = JSON.stringify(subscriptions, null, 2);
-    const phoneNumber = "5544991842415"; // Número com código do país
-    const message = `Backup das minhas assinaturas:\n\n${dataStr}`;
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    
-    window.open(whatsappUrl, '_blank');
-    
-    toast({
-      title: "WhatsApp aberto!",
-      description: "O backup foi preparado para envio via WhatsApp.",
-    });
-  };
+
 
   const importFromText = () => {
     if (!textImport.trim()) {
@@ -180,15 +168,7 @@ export function ExportImport({ subscriptions, onImport }: ExportImportProps) {
           Exportar JSON ({subscriptions.length})
         </Button>
 
-        <Button
-          onClick={exportToWhatsApp}
-          variant="outline"
-          className="flex items-center gap-2 hover:bg-green-500/10 hover:text-green-500 hover:border-green-500/30 transition-all duration-300 py-3 px-5 font-medium"
-          disabled={subscriptions.length === 0}
-        >
-          <MessageCircle className="h-4 w-4" />
-          Backup WhatsApp
-        </Button>
+
         
         <div className="flex items-center gap-2">
           <Label htmlFor="import-file" className="sr-only">
