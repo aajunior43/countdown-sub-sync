@@ -2,7 +2,7 @@ import { useState } from "react";
 import { SubscriptionCard } from "@/components/SubscriptionCard";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
 
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import { ExportImport } from "@/components/ExportImport";
 import UserMenu from "@/components/UserMenu";
 import { Subscription, SubscriptionFormData } from "@/types/subscription";
@@ -152,7 +152,6 @@ const Index = () => {
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <UserMenu />
-              <ThemeToggle />
               <ExportImport
                 subscriptions={subscriptions}
                 onImport={handleImportSubscriptions}
