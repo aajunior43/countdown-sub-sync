@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Send, Settings, Download, RefreshCw, Upload, Bot, BotOff } from "lucide-react";
+import { Send, Settings, Download, Copy, RefreshCw, Upload, Bot, BotOff } from "lucide-react";
 import { Subscription } from "@/types/subscription";
 import { useToast } from "@/hooks/use-toast";
 import useLocalStorage from "@/hooks/use-local-storage";
@@ -318,7 +318,22 @@ export function TelegramBackup({ subscriptions, onRestoreBackup, onAddSubscripti
     }
   };
 
-
+  // Copiar dados para clipboard
+  const copyToClipboard = async (data: string) => {
+    try {
+      await navigator.clipboard.writeText(data);
+      toast({
+        title: "Copiado!",
+        description: "Dados copiados para a área de transferência."
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Erro ao copiar dados.",
+        variant: "destructive"
+      });
+    }
+  };
 
   // Buscar último backup do Telegram
   const getLastBackup = async () => {
@@ -1983,7 +1998,26 @@ Mensagem do usuário: "${userMessage}"`;
                 <DialogTitle>Dados do Backup</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
-
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(backupData)}
+                    className="flex items-center gap-2"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Copiar JSON
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(generateReadableText())}
+                    className="flex items-center gap-2"
+                  >
+                    <Copy className="h-4 w-4" />
+                    Copiar Texto
+                  </Button>
+                </div>
                 <Textarea
                   value={backupData}
                   readOnly
