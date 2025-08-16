@@ -159,13 +159,13 @@ const Auth = () => {
         {/* Meteors */}
          {Array.from({ length: 2 }).map((_, i) => {
            const directions = [
-             { angle: 135, startX: '100vw', startY: '0vh', endX: '0vw', endY: '100vh' }, // Top-right to bottom-left
-             { angle: 45, startX: '0vw', startY: '0vh', endX: '100vw', endY: '100vh' },   // Top-left to bottom-right
-             { angle: 225, startX: '100vw', startY: '100vh', endX: '0vw', endY: '0vh' }, // Bottom-right to top-left
-             { angle: 315, startX: '0vw', startY: '100vh', endX: '100vw', endY: '0vh' }  // Bottom-left to top-right
+             { tailAngle: 315, startX: '100vw', startY: '0vh', endX: '0vw', endY: '100vh' }, // Top-right to bottom-left (cauda aponta para cima-direita)
+             { tailAngle: 225, startX: '0vw', startY: '0vh', endX: '100vw', endY: '100vh' }, // Top-left to bottom-right (cauda aponta para cima-esquerda)
+             { tailAngle: 135, startX: '100vw', startY: '100vh', endX: '0vw', endY: '0vh' }, // Bottom-right to top-left (cauda aponta para baixo-direita)
+             { tailAngle: 45, startX: '0vw', startY: '100vh', endX: '100vw', endY: '0vh' }   // Bottom-left to top-right (cauda aponta para baixo-esquerda)
            ];
-           const direction = directions[Math.floor(Math.random() * directions.length)];
-           const tailAngle = direction.angle + (Math.random() - 0.5) * 20;
+           const direction = directions[i % directions.length]; // Usar direções específicas para cada meteoro
+           const tailAngle = direction.tailAngle + (Math.random() - 0.5) * 15; // Pequena variação
            
            return (
              <div
