@@ -134,35 +134,44 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
     try {
       let submission: SubscriptionFormData = { ...formData };
 
-      // Validar e processar data de renovação
+      // Validar data de renovação
       if (!formData.renewalDate) {
-        const now = new Date();
-        const daysToAdd = formData.billingPeriod === 'mensal' ? 30 : 365;
-        const ms = daysToAdd * 24 * 60 * 60 * 1000;
-        const next = new Date(now.getTime() + ms);
-        submission.renewalDate = formatDateTimeLocal(next);
-      } else {
-        // Validar formato da data
-        const renewalDate = new Date(formData.renewalDate);
-        if (isNaN(renewalDate.getTime())) {
-          toast({
-            title: "Erro",
-            description: "Data de renovação inválida.",
-            variant: "destructive",
-          });
-          return;
-        }
-        
-        // Verificar se a data não é no passado
-        const now = new Date();
-        if (renewalDate < now) {
-          toast({
-            title: "Aviso",
-            description: "A data de renovação está no passado. Tem certeza?",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Erro",
+          description: "A data de renovação é obrigatória.",
+          variant: "destructive",
+        });
+        return;
       }
+
+      // Validar formato da data
+      const renewalDate = new Date(formData.renewalDate);
+      if (isNaN(renewalDate.getTime())) {
+        toast({
+          title: "Erro",
+          description: "Data de renovação inválida.",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      // Verificar se a data não é no passado
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // Zerar horas para comparar apenas a data
+      renewalDate.setHours(0, 0, 0, 0);
+      
+      if (renewalDate < now) {
+        toast({
+          title: "Aviso",
+          description: "A data de renovação está no passado. Tem certeza?",
+          variant: "destructive",
+        });
+      }
+
+      // Usar a data selecionada com horário padrão (meio-dia)
+      const finalDate = new Date(formData.renewalDate);
+      finalDate.setHours(12, 0, 0, 0);
+      submission.renewalDate = finalDate.toISOString();
 
       // Limpar e validar dados
       submission.name = submission.name.trim();
@@ -286,7 +295,7 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
               <Label htmlFor="renewalDate">Data de Renovação *</Label>
               <Input
                 id="renewalDate"
-                type="datetime-local"
+                type="date"
                 value={formData.renewalDate}
                 onChange={(e) => setFormData({ ...formData, renewalDate: e.target.value })}
                 className="bg-background"
@@ -416,7 +425,7 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
               <Label htmlFor="renewalDate">Data de Renovação *</Label>
               <Input
                 id="renewalDate"
-                type="datetime-local"
+                type="date"
                 value={formData.renewalDate}
                 onChange={(e) => setFormData({ ...formData, renewalDate: e.target.value })}
               />
