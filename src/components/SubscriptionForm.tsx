@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { Subscription, SubscriptionFormData } from "@/types/subscription";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,6 +17,7 @@ interface SubscriptionFormProps {
 
 export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: SubscriptionFormProps) {
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<SubscriptionFormData>({
     name: editingSubscription?.name || "",
     price: editingSubscription?.price || 0,
@@ -51,46 +52,115 @@ const currencies = ["R$", "US$", "€", "£"];
     return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.price || !formData.category || !formData.billingPeriod) {
+    // Validações básicas
+    if (!formData.name?.trim()) {
       toast({
         title: "Erro",
-        description: "Por favor, preencha os campos obrigatórios.",
+        description: "O nome da assinatura é obrigatório.",
         variant: "destructive",
       });
       return;
     }
 
-    let submission: SubscriptionFormData = { ...formData };
-
-    if (!formData.renewalDate) {
-      const now = new Date();
-      const daysToAdd = formData.billingPeriod === 'mensal' ? 30 : 365;
-      const ms = daysToAdd * 24 * 60 * 60 * 1000;
-      const next = new Date(now.getTime() + ms);
-      submission.renewalDate = formatDateTimeLocal(next);
+    if (!formData.price || formData.price <= 0) {
+      toast({
+        title: "Erro",
+        description: "O preço deve ser maior que zero.",
+        variant: "destructive",
+      });
+      return;
     }
 
-    onSubmit(submission);
-    setFormData({
-      name: "",
-      price: 0,
-      currency: "R$",
-      renewalDate: "",
-      category: "",
-      description: "",
-      billingPeriod: 'mensal',
-    });
-    setOpen(false);
-    
-    if (onCancel) onCancel();
-    
-    toast({
-      title: editingSubscription ? "Assinatura atualizada!" : "Assinatura adicionada!",
-      description: "As informações foram salvas com sucesso.",
-    });
+    if (!formData.category) {
+      toast({
+        title: "Erro",
+        description: "A categoria é obrigatória.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.billingPeriod) {
+      toast({
+        title: "Erro",
+        description: "O período de cobrança é obrigatório.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      let submission: SubscriptionFormData = { ...formData };
+
+      // Validar e processar data de renovação
+      if (!formData.renewalDate) {
+        const now = new Date();
+        const daysToAdd = formData.billingPeriod === 'mensal' ? 30 : 365;
+        const ms = daysToAdd * 24 * 60 * 60 * 1000;
+        const next = new Date(now.getTime() + ms);
+        submission.renewalDate = formatDateTimeLocal(next);
+      } else {
+        // Validar formato da data
+        const renewalDate = new Date(formData.renewalDate);
+        if (isNaN(renewalDate.getTime())) {
+          toast({
+            title: "Erro",
+            description: "Data de renovação inválida.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        // Verificar se a data não é no passado
+        const now = new Date();
+        if (renewalDate < now) {
+          toast({
+            title: "Aviso",
+            description: "A data de renovação está no passado. Tem certeza?",
+            variant: "destructive",
+          });
+        }
+      }
+
+      // Limpar e validar dados
+      submission.name = submission.name.trim();
+      submission.description = submission.description?.trim() || "";
+      submission.price = Number(submission.price);
+
+      await onSubmit(submission);
+      
+      // Resetar formulário apenas se não estiver editando
+      if (!editingSubscription) {
+        setFormData({
+          name: "",
+          price: 0,
+          currency: "R$",
+          renewalDate: "",
+          category: "",
+          description: "",
+          billingPeriod: 'mensal',
+        });
+      }
+      
+      setOpen(false);
+      
+      if (onCancel) onCancel();
+      
+    } catch (error) {
+      console.error('Erro ao salvar assinatura:', error);
+      toast({
+        title: "Erro",
+        description: "Ocorreu um erro ao salvar a assinatura. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isEditing = !!editingSubscription;
@@ -195,8 +265,19 @@ const currencies = ["R$", "US$", "€", "£"];
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button type="submit" className="gradient-button flex-1 py-3 text-base font-semibold">
-              Salvar Alterações
+            <Button 
+              type="submit" 
+              className="gradient-button flex-1 py-3 text-base font-semibold"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Salvando...
+                </>
+              ) : (
+                "Salvar Alterações"
+              )}
             </Button>
             <Button type="button" variant="outline" onClick={onCancel} className="px-8 py-3">
               Cancelar
@@ -308,8 +389,19 @@ const currencies = ["R$", "US$", "€", "£"];
             />
           </div>
 
-          <Button type="submit" className="w-full gradient-button py-4 text-lg font-semibold">
-            Adicionar Assinatura
+          <Button 
+            type="submit" 
+            className="w-full gradient-button py-4 text-lg font-semibold"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Adicionando...
+              </>
+            ) : (
+              "Adicionar Assinatura"
+            )}
           </Button>
         </form>
       </DialogContent>
