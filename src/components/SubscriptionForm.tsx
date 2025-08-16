@@ -54,6 +54,39 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
     return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
   };
 
+  // Função para formatar valor como moeda brasileira
+  const formatCurrency = (value: string) => {
+    // Remove tudo que não é dígito
+    const numbers = value.replace(/\D/g, '');
+    
+    // Se não há números, retorna vazio
+    if (!numbers) return '';
+    
+    // Converte para centavos
+    const cents = parseInt(numbers);
+    
+    // Formata como moeda (divide por 100 para ter centavos)
+    const formatted = (cents / 100).toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    
+    return formatted;
+  };
+
+  // Função para converter valor formatado para número
+  const parseCurrency = (value: string): number => {
+    if (!value) return 0;
+    // Remove pontos e substitui vírgula por ponto
+    const cleanValue = value.replace(/\./g, '').replace(',', '.');
+    return parseFloat(cleanValue) || 0;
+  };
+
+  // Estado para o valor formatado
+  const [formattedPrice, setFormattedPrice] = useState<string>(
+    editingSubscription?.price ? formatCurrency(editingSubscription.price.toString().replace('.', '')) : ''
+  );
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -149,6 +182,7 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
           description: "",
           billingPeriod: 'mensal',
         });
+        setFormattedPrice('');
       }
       
       setOpen(false);
@@ -235,11 +269,14 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
                 </Select>
                 <Input
                   id="price"
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                  placeholder="0.00"
+                  type="text"
+                  value={formattedPrice}
+                  onChange={(e) => {
+                    const formatted = formatCurrency(e.target.value);
+                    setFormattedPrice(formatted);
+                    setFormData({ ...formData, price: parseCurrency(formatted) });
+                  }}
+                  placeholder="0,00"
                   className="bg-background"
                 />
               </div>
@@ -363,11 +400,14 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
                 </Select>
                 <Input
                   id="price"
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
-                  placeholder="0.00"
+                  type="text"
+                  value={formattedPrice}
+                  onChange={(e) => {
+                    const formatted = formatCurrency(e.target.value);
+                    setFormattedPrice(formatted);
+                    setFormData({ ...formData, price: parseCurrency(formatted) });
+                  }}
+                  placeholder="0,00"
                 />
               </div>
             </div>
