@@ -23,6 +23,7 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
     price: editingSubscription?.price || 0,
     currency: editingSubscription?.currency || "R$",
     renewalDate: editingSubscription?.renewalDate || "",
+    category: editingSubscription?.category || "",
     description: editingSubscription?.description || "",
     billingPeriod: editingSubscription?.billingPeriod || 'mensal',
   });
@@ -30,7 +31,18 @@ export function SubscriptionForm({ onSubmit, editingSubscription, onCancel }: Su
 
 
 
-const currencies = ["R$", "US$", "€", "£"];
+  const categories = [
+    "Streaming",
+    "Software",
+    "Música",
+    "Jogos",
+    "Produtividade",
+    "Educação",
+    "Saúde",
+    "Outros"
+  ];
+
+  const currencies = ["R$", "US$", "€", "£"];
 
   const formatDateTimeLocal = (date: Date) => {
     const pad = (n: number) => n.toString().padStart(2, '0');
@@ -65,6 +77,15 @@ const currencies = ["R$", "US$", "€", "£"];
     }
 
 
+
+    if (!formData.category) {
+      toast({
+        title: "Erro",
+        description: "A categoria é obrigatória.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     if (!formData.billingPeriod) {
       toast({
@@ -124,6 +145,7 @@ const currencies = ["R$", "US$", "€", "£"];
           price: 0,
           currency: "R$",
           renewalDate: "",
+          category: "",
           description: "",
           billingPeriod: 'mensal',
         });
@@ -167,7 +189,21 @@ const currencies = ["R$", "US$", "€", "£"];
               />
             </div>
 
-
+            <div className="space-y-2">
+               <Label htmlFor="category">Categoria *</Label>
+               <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                 <SelectTrigger className="bg-background">
+                   <SelectValue placeholder="Selecione uma categoria" />
+                 </SelectTrigger>
+                 <SelectContent>
+                   {categories.map((category) => (
+                     <SelectItem key={category} value={category}>
+                       {category}
+                     </SelectItem>
+                   ))}
+                 </SelectContent>
+               </Select>
+             </div>
 
             <div className="space-y-2">
               <Label htmlFor="billingPeriod">Periodicidade *</Label>
@@ -281,7 +317,21 @@ const currencies = ["R$", "US$", "€", "£"];
               />
             </div>
 
-
+            <div className="space-y-2">
+              <Label htmlFor="category">Categoria *</Label>
+              <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione uma categoria" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="billingPeriod">Periodicidade *</Label>

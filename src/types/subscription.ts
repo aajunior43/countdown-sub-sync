@@ -4,6 +4,7 @@ export interface Subscription {
   price: number;
   currency: string;
   renewalDate: string;
+  category: string;
   description?: string;
   isActive: boolean;
   billingPeriod: 'mensal' | 'anual';
@@ -18,6 +19,7 @@ export interface SubscriptionFormData {
   price: number;
   currency: string;
   renewalDate: string;
+  category: string;
   description?: string;
   billingPeriod: 'mensal' | 'anual';
 }

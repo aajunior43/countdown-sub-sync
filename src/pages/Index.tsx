@@ -40,6 +40,7 @@ const Index = () => {
       price: subscriptionData.price,
       currency: subscriptionData.currency,
       renewalDate: subscriptionData.renewalDate,
+      category: subscriptionData.category,
       description: subscriptionData.description,
       billingPeriod: subscriptionData.billingPeriod
     };
