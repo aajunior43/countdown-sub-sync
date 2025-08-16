@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_activity: {
+        Row: {
+          activity_type: string
+          description: string
+          id: string
+          timestamp: string
+        }
+        Insert: {
+          activity_type: string
+          description: string
+          id?: string
+          timestamp?: string
+        }
+        Update: {
+          activity_type?: string
+          description?: string
+          id?: string
+          timestamp?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           billing_period: string
