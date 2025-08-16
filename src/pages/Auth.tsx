@@ -14,6 +14,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('signin');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -133,117 +134,279 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Bem-vindo</CardTitle>
-          <CardDescription>
-            Faça login ou crie sua conta para gerenciar suas assinaturas
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">Entrar</TabsTrigger>
-              <TabsTrigger value="signup">Cadastrar</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="signin">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{
+      background: 'linear-gradient(135deg, #0078d4 0%, #106ebe 25%, #005a9e  50%, #004578 75%, #003d6b 100%)',
+      fontFamily: 'Tahoma, sans-serif'
+    }}>
+      {/* Windows XP Style Background Pattern */}
+      <div className="absolute inset-0 opacity-10" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+      }}></div>
+      
+      {/* Windows XP Login Box */}
+      <div className="relative w-full max-w-md" style={{
+        background: 'linear-gradient(180deg, #f0f0f0 0%, #e8e8e8 50%, #d0d0d0 100%)',
+        border: '2px outset #c0c0c0',
+        borderRadius: '8px',
+        boxShadow: '4px 4px 8px rgba(0,0,0,0.3)'
+      }}>
+        {/* Title Bar */}
+        <div className="flex items-center justify-between p-2" style={{
+          background: 'linear-gradient(180deg, #0078d4 0%, #005a9e 100%)',
+          borderRadius: '6px 6px 0 0',
+          borderBottom: '1px solid #003d6b'
+        }}>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center text-xs font-bold text-blue-600">🔐</div>
+            <span className="text-white text-sm font-bold">Login do Sistema</span>
+          </div>
+          <div className="flex gap-1">
+            <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded-sm"></div>
+            <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded-sm"></div>
+            <div className="w-4 h-4 bg-red-500 border border-red-600 rounded-sm"></div>
+          </div>
+        </div>
+        
+        {/* Content Area */}
+        <div className="p-6">
+          {/* Windows XP Logo Area */}
+          <div className="text-center mb-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 mb-3" style={{
+              background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd100 100%)',
+              border: '2px outset #ffd100',
+              borderRadius: '8px',
+              boxShadow: 'inset 1px 1px 2px rgba(255,255,255,0.5)'
+            }}>
+              <span className="text-2xl font-bold text-white">📊</span>
+            </div>
+            <h1 className="text-xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+              Minhas Assinaturas
+            </h1>
+            <p className="text-sm text-gray-600">Sistema de Gerenciamento v2.0</p>
+          </div>
+          
+          {/* Windows XP Style Tabs */}
+           <div className="mb-4">
+             <div className="flex border-b border-gray-400">
+               <button 
+                 onClick={() => setActiveTab('signin')}
+                 className={`px-4 py-2 text-sm font-medium border-t border-l border-r rounded-t-lg ${
+                   activeTab === 'signin' 
+                     ? 'bg-white border-gray-400 text-gray-800 -mb-px' 
+                     : 'bg-gray-200 border-gray-300 text-gray-600'
+                 }`}
+                 style={{
+                   borderBottom: activeTab === 'signin' ? '1px solid white' : '1px solid #ccc',
+                   fontFamily: 'Tahoma, sans-serif'
+                 }}
+               >
+                 🔑 Entrar
+               </button>
+               <button 
+                 onClick={() => setActiveTab('signup')}
+                 className={`px-4 py-2 text-sm font-medium border-t border-l border-r rounded-t-lg ${
+                   activeTab === 'signup' 
+                     ? 'bg-white border-gray-400 text-gray-800 -mb-px' 
+                     : 'bg-gray-200 border-gray-300 text-gray-600'
+                 }`}
+                 style={{
+                   borderBottom: activeTab === 'signup' ? '1px solid white' : '1px solid #ccc',
+                   fontFamily: 'Tahoma, sans-serif'
+                 }}
+               >
+                 👤 Cadastrar
+               </button>
+             </div>
+           </div>
+          
+          <div className="w-full">
+            {activeTab === 'signin' && (
+              <div>
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
-                  <Input
-                    id="signin-email"
+                  <label className="text-sm font-medium text-gray-700" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+                    📧 Nome de usuário:
+                  </label>
+                  <input
                     type="email"
-                    placeholder="seu@email.com"
+                    placeholder="Digite seu email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    className="w-full px-3 py-2 text-sm"
+                    style={{
+                      border: '2px inset #c0c0c0',
+                      borderRadius: '2px',
+                      fontFamily: 'Tahoma, sans-serif',
+                      backgroundColor: 'white'
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signin-password">Senha</Label>
+                  <label className="text-sm font-medium text-gray-700" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+                    🔒 Senha:
+                  </label>
                   <div className="relative">
-                    <Input
-                      id="signin-password"
+                    <input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Sua senha"
+                      placeholder="Digite sua senha"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      className="w-full px-3 py-2 text-sm pr-10"
+                      style={{
+                        border: '2px inset #c0c0c0',
+                        borderRadius: '2px',
+                        fontFamily: 'Tahoma, sans-serif',
+                        backgroundColor: 'white'
+                      }}
                     />
-                    <Button
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 flex items-center justify-center"
                       onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        border: '1px outset #c0c0c0',
+                        borderRadius: '2px',
+                        backgroundColor: '#f0f0f0',
+                        fontSize: '10px'
+                      }}
                     >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
+                      {showPassword ? '🙈' : '👁️'}
+                    </button>
                   </div>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Entrando...' : 'Entrar'}
-                </Button>
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full py-3 text-sm font-bold text-white mt-6"
+                  style={{
+                    background: loading ? '#cccccc' : 'linear-gradient(180deg, #4CAF50 0%, #45a049 50%, #3d8b40 100%)',
+                    border: '2px outset #4CAF50',
+                    borderRadius: '4px',
+                    fontFamily: 'Tahoma, sans-serif',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    boxShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+                  }}
+                  onMouseDown={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.border = '2px inset #4CAF50';
+                    }
+                  }}
+                  onMouseUp={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.border = '2px outset #4CAF50';
+                    }
+                  }}
+                >
+                  {loading ? '⏳ Entrando...' : '✅ Entrar no Sistema'}
+                </button>
               </form>
-            </TabsContent>
+              </div>
+            )}
             
-            <TabsContent value="signup">
+            {activeTab === 'signup' && (
+              <div>
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
+                  <label className="text-sm font-medium text-gray-700" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+                    📧 Email para cadastro:
+                  </label>
+                  <input
                     type="email"
-                    placeholder="seu@email.com"
+                    placeholder="Digite seu email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    className="w-full px-3 py-2 text-sm"
+                    style={{
+                      border: '2px inset #c0c0c0',
+                      borderRadius: '2px',
+                      fontFamily: 'Tahoma, sans-serif',
+                      backgroundColor: 'white'
+                    }}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="signup-password">Senha</Label>
+                  <label className="text-sm font-medium text-gray-700" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+                    🔒 Criar senha:
+                  </label>
                   <div className="relative">
-                    <Input
-                      id="signup-password"
+                    <input
                       type={showPassword ? 'text' : 'password'}
-                      placeholder="Crie uma senha"
+                      placeholder="Crie uma senha segura"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
+                      className="w-full px-3 py-2 text-sm pr-10"
+                      style={{
+                        border: '2px inset #c0c0c0',
+                        borderRadius: '2px',
+                        fontFamily: 'Tahoma, sans-serif',
+                        backgroundColor: 'white'
+                      }}
                     />
-                    <Button
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 flex items-center justify-center"
                       onClick={() => setShowPassword(!showPassword)}
+                      style={{
+                        border: '1px outset #c0c0c0',
+                        borderRadius: '2px',
+                        backgroundColor: '#f0f0f0',
+                        fontSize: '10px'
+                      }}
                     >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
+                      {showPassword ? '🙈' : '👁️'}
+                    </button>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    A senha deve ter pelo menos 6 caracteres
+                  <p className="text-xs text-gray-600 mt-1" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+                    ⚠️ Mínimo de 6 caracteres
                   </p>
                 </div>
-                <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Cadastrando...' : 'Cadastrar'}
-                </Button>
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="w-full py-3 text-sm font-bold text-white mt-6"
+                  style={{
+                    background: loading ? '#cccccc' : 'linear-gradient(180deg, #2196F3 0%, #1976D2 50%, #1565C0 100%)',
+                    border: '2px outset #2196F3',
+                    borderRadius: '4px',
+                    fontFamily: 'Tahoma, sans-serif',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    boxShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+                  }}
+                  onMouseDown={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.border = '2px inset #2196F3';
+                    }
+                  }}
+                  onMouseUp={(e) => {
+                    if (!loading) {
+                      e.currentTarget.style.border = '2px outset #2196F3';
+                    }
+                  }}
+                >
+                  {loading ? '⏳ Cadastrando...' : '🆕 Criar Conta'}
+                </button>
               </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+              </div>
+            )}
+          </div>
+          
+          {/* Windows XP Footer */}
+          <div className="mt-6 pt-4 border-t border-gray-400 text-center">
+            <p className="text-xs text-gray-600" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+              💻 Sistema compatível com Windows XP • Versão 2.0.1
+            </p>
+            <div className="flex justify-center items-center gap-2 mt-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-xs text-gray-600" style={{ fontFamily: 'Tahoma, sans-serif' }}>Conectado</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
