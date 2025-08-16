@@ -81,17 +81,95 @@ const Index = () => {
   }).length;
 
   return (
-    <div className="min-h-screen bg-background bg-bg-pattern">
+    <div className="min-h-screen relative overflow-hidden" style={{
+      background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Starfield Background */}
+      <div className="fixed inset-0 z-0">
+        {/* Stars */}
+        {Array.from({ length: 150 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: Math.random() * 2 + 'px',
+              height: Math.random() * 2 + 'px',
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+              opacity: Math.random() * 0.8 + 0.2,
+              animation: `twinkle ${Math.random() * 3 + 2}s infinite alternate`
+            }}
+          />
+        ))}
+        
+        {/* Meteors */}
+        {Array.from({ length: 1 }).map((_, i) => {
+          const directions = [
+            { movementAngle: 225, tailAngle: 45 },
+            { movementAngle: 315, tailAngle: 135 },
+            { movementAngle: 135, tailAngle: 315 },
+            { movementAngle: 45, tailAngle: 225 }
+          ];
+          const direction = directions[Math.floor(Math.random() * directions.length)];
+          const tailAngle = direction.tailAngle + (Math.random() - 0.5) * 10;
+          
+          return (
+            <div
+              key={`meteor-${i}`}
+              className="absolute"
+              style={{
+                width: '80px',
+                height: '1px',
+                background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.2) 70%, rgba(255,255,255,0.4) 90%, rgba(255,255,255,0.6) 100%)',
+                borderRadius: '0.5px',
+                boxShadow: '0 0 4px 0.5px rgba(255,255,255,0.2), 0 0 8px 1px rgba(255,255,255,0.05)',
+                animation: `meteor-main ${Math.random() * 20 + 40}s linear infinite`,
+                animationDelay: `${Math.random() * 30}s`,
+                transform: `rotate(${tailAngle}deg)`,
+                filter: 'blur(0.2px)'
+              }}
+            />
+          );
+        })}
+      </div>
+      
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes twinkle {
+          0% { opacity: 0.2; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
+          100% { opacity: 0.2; transform: scale(1); }
+        }
+        
+        @keyframes meteor-main {
+          0% {
+            transform: translateX(-20vw) translateY(-20vh);
+            opacity: 0;
+          }
+          3% {
+            opacity: 0.6;
+          }
+          97% {
+            opacity: 0.6;
+          }
+          100% {
+            transform: translateX(120vw) translateY(120vh);
+            opacity: 0;
+          }
+        }
+      `}</style>
+      
       {/* Modern Header */}
-      <header className="relative border-b border-border/50 bg-card-gradient overflow-hidden backdrop-blur-sm">
-        <div className="absolute inset-0 bg-purple-gradient opacity-10 pointer-events-none" />
+      <header className="relative z-10 border-b border-white/10 bg-black/20 backdrop-blur-xl">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-blue-500/10 pointer-events-none" />
         <div className="container mx-auto px-6 py-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="space-y-2">
-              <h1 className="text-4xl lg:text-5xl font-bold text-foreground bg-purple-gradient bg-clip-text text-transparent animate-fade-in">
+              <h1 className="text-4xl lg:text-5xl font-bold text-white animate-fade-in">
                 Minhas Assinaturas
               </h1>
-
+              <p className="text-gray-300 text-lg">Gerencie suas assinaturas no espaço</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <UserMenu />
@@ -110,61 +188,61 @@ const Index = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-10">
+      <main className="relative z-10 container mx-auto px-6 py-10">
         {/* Enhanced Statistics Cards */}
         <section className="space-y-6">
           <div className="text-center space-y-2">
-            <h2 className="text-2xl font-semibold text-foreground">Visão Geral</h2>
-            <p className="text-muted-foreground">Acompanhe suas métricas importantes</p>
+            <h2 className="text-2xl font-semibold text-white">Visão Geral</h2>
+            <p className="text-gray-300">Acompanhe suas métricas importantes</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="stats-card">
+            <Card className="bg-black/40 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
                   Total Mensal
                 </CardTitle>
-                <DollarSign className="icon-large" />
+                <DollarSign className="h-6 w-6 text-green-400" />
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-white">
                   R$ {totalMonthlySpending.toFixed(2)}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-400">
                   Gastos recorrentes mensais
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="stats-card">
+            <Card className="bg-black/40 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
                   Assinaturas Ativas
                 </CardTitle>
-                <CreditCard className="icon-large" />
+                <CreditCard className="h-6 w-6 text-blue-400" />
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-white">
                   {activeSubscriptions}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-400">
                   Serviços ativos atualmente
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="stats-card">
+            <Card className="bg-black/40 backdrop-blur-xl border-white/20 shadow-2xl">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
                   Renovações (7 dias)
                 </CardTitle>
-                <Calendar className="icon-large" />
+                <Calendar className="h-6 w-6 text-orange-400" />
               </CardHeader>
               <CardContent className="space-y-1">
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-white">
                   {upcomingRenewals}
                 </div>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-gray-400">
                   Vencimentos próximos
                 </p>
               </CardContent>
@@ -188,13 +266,14 @@ const Index = () => {
 
         {/* Main Content with Tabs */}
         {subscriptions.length === 0 ? (
-          <div className="empty-state">
-            <div className="w-20 h-20 bg-purple-gradient rounded-2xl flex items-center justify-center mb-6 shadow-purple-glow animate-pulse-glow">
+          <div className="text-center py-16">
+            <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-2xl">
               <CreditCard className="h-10 w-10 text-white" />
             </div>
-            <h3 className="text-2xl font-bold text-foreground mb-3">
+            <h3 className="text-2xl font-bold text-white mb-3">
               Nenhuma assinatura cadastrada
             </h3>
+            <p className="text-gray-300 mb-6">Comece adicionando sua primeira assinatura</p>
             
             <div className="pt-4">
               <SubscriptionForm
@@ -206,12 +285,12 @@ const Index = () => {
           </div>
         ) : (
           <Tabs defaultValue="subscriptions" className="space-y-6">
-             <TabsList className="grid w-full grid-cols-2">
-               <TabsTrigger value="subscriptions" className="flex items-center gap-2">
+             <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-xl border-white/20">
+               <TabsTrigger value="subscriptions" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-white/20">
                  <CreditCard className="h-4 w-4" />
                  Assinaturas
                </TabsTrigger>
-               <TabsTrigger value="settings" className="flex items-center gap-2">
+               <TabsTrigger value="settings" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-white/20">
                  <Settings className="h-4 w-4" />
                  Configurações
                </TabsTrigger>
@@ -221,21 +300,21 @@ const Index = () => {
               {/* Subscriptions Grid */}
               <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-semibold text-foreground">Suas Assinaturas</h2>
-                  <span className="text-sm text-muted-foreground">
+                  <h2 className="text-2xl font-semibold text-white">Suas Assinaturas</h2>
+                  <span className="text-sm text-gray-300">
                     {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
                   </span>
                 </div>
                 
                 {subscriptions.length === 0 ? (
-                  <div className="empty-state">
-                    <div className="w-20 h-20 bg-purple-gradient rounded-2xl flex items-center justify-center mb-6 shadow-purple-glow animate-pulse-glow">
+                  <div className="text-center py-16">
+                    <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-2xl">
                       <CreditCard className="h-10 w-10 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-3">
+                    <h3 className="text-2xl font-bold text-white mb-3">
                       Nenhuma assinatura encontrada
                     </h3>
-                    <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+                    <p className="text-gray-300 text-lg max-w-md mx-auto leading-relaxed">
                       Adicione sua primeira assinatura para começar a gerenciar seus gastos mensais.
                     </p>
                   </div>
@@ -267,10 +346,10 @@ const Index = () => {
       </main>
       
       {/* Footer */}
-      <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm mt-16">
+      <footer className="relative z-10 border-t border-white/10 bg-black/20 backdrop-blur-xl mt-16">
         <div className="container mx-auto px-6 py-6">
           <div className="text-center">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-gray-400">
               DEV ALEKSANDRO ALVES
             </p>
           </div>
