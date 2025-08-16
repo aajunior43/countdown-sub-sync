@@ -136,7 +136,6 @@ export function useSubscriptions() {
         price: parseFloat(newSub.price.toString()),
         currency: newSub.currency,
         renewalDate: newSub.renewal_date,
-        category: newSub.category,
         description: newSub.description || '',
         isActive: newSub.is_active,
         billingPeriod: newSub.billing_period as 'mensal' | 'anual'
