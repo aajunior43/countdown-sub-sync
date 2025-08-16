@@ -5,6 +5,7 @@ import { NotificationSettings } from "@/components/NotificationSettings";
 import { TelegramBackup } from "@/components/TelegramBackup";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExportImport } from "@/components/ExportImport";
+import UserMenu from "@/components/UserMenu";
 import { Subscription, SubscriptionFormData } from "@/types/subscription";
 import { CreditCard, DollarSign, Calendar, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -93,6 +94,7 @@ const Index = () => {
 
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
+              <UserMenu />
               <ThemeToggle />
               <ExportImport
                 subscriptions={subscriptions}
