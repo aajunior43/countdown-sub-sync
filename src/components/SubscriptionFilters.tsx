@@ -14,21 +14,12 @@ interface SubscriptionFiltersProps {
 
 export function SubscriptionFilters({ subscriptions, onFilteredSubscriptions }: SubscriptionFiltersProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("renewalDate");
   const [sortOrder, setSortOrder] = useState<string>("asc");
 
-  const categories = [
-    "Streaming",
-    "Software",
-    "Música",
-    "Jogos",
-    "Produtividade",
-    "Educação",
-    "Saúde",
-    "Outros"
-  ];
+
 
   const applyFilters = () => {
     let filtered = [...subscriptions];
@@ -41,10 +32,7 @@ export function SubscriptionFilters({ subscriptions, onFilteredSubscriptions }: 
       );
     }
 
-    // Filtro por categoria
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(sub => sub.category === selectedCategory);
-    }
+    
 
     // Filtro por status
     if (selectedStatus !== "all") {
@@ -80,10 +68,7 @@ export function SubscriptionFilters({ subscriptions, onFilteredSubscriptions }: 
           aValue = new Date(a.renewalDate);
           bValue = new Date(b.renewalDate);
           break;
-        case "category":
-          aValue = a.category.toLowerCase();
-          bValue = b.category.toLowerCase();
-          break;
+
         default:
           aValue = a.name.toLowerCase();
           bValue = b.name.toLowerCase();
@@ -111,7 +96,14 @@ export function SubscriptionFilters({ subscriptions, onFilteredSubscriptions }: 
   // Aplica filtros sempre que algum valor muda
   React.useEffect(() => {
     applyFilters();
-  }, [searchTerm, selectedCategory, selectedStatus, sortBy, sortOrder, subscriptions]);
+  }, [searchTerm, selectedStatus, sortBy, sortOrder, subscriptions]);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedStatus("all");
+    setSortBy("renewalDate");
+    setSortOrder("asc");
+  };
 
   return (
     <Card className="mb-6">
@@ -122,7 +114,7 @@ export function SubscriptionFilters({ subscriptions, onFilteredSubscriptions }: 
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {/* Campo de busca */}
           <div className="space-y-2">
             <Label htmlFor="search">Buscar</Label>
@@ -138,23 +130,7 @@ export function SubscriptionFilters({ subscriptions, onFilteredSubscriptions }: 
             </div>
           </div>
 
-          {/* Filtro por categoria */}
-          <div className="space-y-2">
-            <Label>Categoria</Label>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger>
-                <SelectValue placeholder="Todas as categorias" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todas as categorias</SelectItem>
-                {categories.map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+
 
           {/* Filtro por status */}
           <div className="space-y-2">
@@ -183,7 +159,7 @@ export function SubscriptionFilters({ subscriptions, onFilteredSubscriptions }: 
                 <SelectItem value="renewalDate">Data de renovação</SelectItem>
                 <SelectItem value="name">Nome</SelectItem>
                 <SelectItem value="price">Preço</SelectItem>
-                <SelectItem value="category">Categoria</SelectItem>
+
               </SelectContent>
             </Select>
           </div>

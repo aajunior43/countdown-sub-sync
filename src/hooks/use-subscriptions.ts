@@ -42,7 +42,7 @@ export function useSubscriptions() {
         price: parseFloat(sub.price.toString()),
         currency: sub.currency,
         renewalDate: sub.renewal_date,
-        category: sub.category,
+
         description: sub.description || '',
         isActive: sub.is_active,
         billingPeriod: sub.billing_period as 'mensal' | 'anual'
@@ -85,9 +85,7 @@ export function useSubscriptions() {
           throw new Error('Preço deve ser maior que zero');
         }
 
-        if (!data.category?.trim()) {
-          throw new Error('Categoria é obrigatória');
-        }
+
 
         if (!data.renewalDate) {
           throw new Error('Data de renovação é obrigatória');
@@ -105,7 +103,7 @@ export function useSubscriptions() {
           price: Number(data.price),
           currency: data.currency || 'R$',
           renewal_date: data.renewalDate,
-          category: data.category.trim(),
+
           description: data.description?.trim() || null,
           is_active: true,
           billing_period: data.billingPeriod
@@ -196,9 +194,7 @@ export function useSubscriptions() {
           throw new Error('Preço deve ser maior que zero');
         }
 
-        if (!data.category?.trim()) {
-          throw new Error('Categoria é obrigatória');
-        }
+
 
         if (!data.renewalDate) {
           throw new Error('Data de renovação é obrigatória');
@@ -215,7 +211,7 @@ export function useSubscriptions() {
           price: Number(data.price),
           currency: data.currency || 'R$',
           renewal_date: data.renewalDate,
-          category: data.category.trim(),
+
           description: data.description?.trim() || null,
           billing_period: data.billingPeriod
         };

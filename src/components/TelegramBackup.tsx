@@ -51,7 +51,7 @@ export function TelegramBackup({ subscriptions, onRestoreBackup, onAddSubscripti
   // Estados para conversação interativa
   const [conversationState, setConversationState] = useState<{
     [chatId: string]: {
-      step: 'idle' | 'name' | 'price' | 'date' | 'category' | 'description' | 'billing';
+      step: 'idle' | 'name' | 'price' | 'date' | 'description' | 'billing';
       data: Partial<Omit<Subscription, 'id'>>;
     }
   }>({});
@@ -455,8 +455,8 @@ export function TelegramBackup({ subscriptions, onRestoreBackup, onAddSubscripti
   // Processar comando para adicionar assinatura
   const processAddSubscriptionCommand = (text: string) => {
     try {
-      // Formato esperado: /add Nome|Preço|Data|Categoria|Descrição|Periodicidade
-      // Exemplo: /add Netflix|29.90|2024-01-15T10:00|Streaming|Plano Premium|mensal
+      // Formato esperado: /add Nome|Preço|Data|Descrição|Periodicidade
+      // Exemplo: /add Netflix|29.90|2024-01-15T10:00|Plano Premium|mensal
       
       if (!text.startsWith('/add ')) {
         return null;
@@ -464,11 +464,11 @@ export function TelegramBackup({ subscriptions, onRestoreBackup, onAddSubscripti
       
       const params = text.substring(5).split('|');
       
-      if (params.length < 4) {
-        throw new Error('Formato inválido. Use: /add Nome|Preço|Data|Categoria|Descrição|Periodicidade');
+      if (params.length < 3) {
+        throw new Error('Formato inválido. Use: /add Nome|Preço|Data|Descrição|Periodicidade');
       }
       
-      const [name, priceStr, dateStr, category, description = '', billingPeriod = 'mensal'] = params;
+      const [name, priceStr, dateStr, description = '', billingPeriod = 'mensal'] = params;
       
       const price = parseFloat(priceStr.replace(',', '.'));
       
@@ -482,11 +482,7 @@ export function TelegramBackup({ subscriptions, onRestoreBackup, onAddSubscripti
         throw new Error('Data inválida. Use formato: YYYY-MM-DDTHH:MM');
       }
       
-      // Validar categoria
-      const validCategories = ['Streaming', 'Software', 'Música', 'Jogos', 'Produtividade', 'Educação', 'Saúde', 'Outros'];
-      if (!validCategories.includes(category)) {
-        throw new Error(`Categoria inválida. Use uma das: ${validCategories.join(', ')}`);
-      }
+
       
       // Validar periodicidade
       if (!['mensal', 'anual'].includes(billingPeriod)) {
@@ -498,7 +494,7 @@ export function TelegramBackup({ subscriptions, onRestoreBackup, onAddSubscripti
         price,
         currency: 'R$',
         renewalDate: renewalDate.toISOString(),
-        category,
+
         description: description.trim(),
         isActive: true,
         billingPeriod: billingPeriod as 'mensal' | 'anual'
@@ -829,7 +825,7 @@ Texto da fatura:
           `📝 *Nome:* ${subscriptionData.name}\n` +
           `💰 *Preço:* R$ ${subscriptionData.price.toFixed(2)}\n` +
           `📅 *Próximo vencimento:* ${new Date(subscriptionData.renewalDate).toLocaleDateString('pt-BR')}\n` +
-          `🏷️ *Categoria:* ${subscriptionData.category}\n` +
+
           `📝 *Descrição:* ${subscriptionData.description || 'Nenhuma'}\n` +
           `⏰ *Periodicidade:* ${subscriptionData.billingPeriod}\n\n` +
           `✅ Digite "confirmar" para adicionar\n` +
@@ -1235,63 +1231,21 @@ Mensagem do usuário: "${userMessage}"`;
           setConversationState(prev => ({
             ...prev,
             [chatId]: {
-              step: 'category',
+              step: 'description',
               data: { ...data, renewalDate: renewalDate.toISOString() }
             }
           }));
           
           await sendTelegramMessage(
             `✅ Data: *${renewalDate.toLocaleDateString('pt-BR')}*\n\n` +
-            '🏷️ *Passo 4/6:* Qual é a categoria?\n\n' +
-            '_Opções disponíveis:_\n' +
-            '1️⃣ Streaming\n' +
-            '2️⃣ Software\n' +
-            '3️⃣ Música\n' +
-            '4️⃣ Jogos\n' +
-            '5️⃣ Produtividade\n' +
-            '6️⃣ Educação\n' +
-            '7️⃣ Saúde\n' +
-            '8️⃣ Outros\n\n' +
-            '_Digite o número ou o nome da categoria_',
-            'Markdown'
-          );
-          return true;
-          
-        case 'category':
-          const categories = ['Streaming', 'Software', 'Música', 'Jogos', 'Produtividade', 'Educação', 'Saúde', 'Outros'];
-          let selectedCategory: string;
-          
-          // Verificar se é número ou nome
-          const categoryNum = parseInt(message);
-          if (!isNaN(categoryNum) && categoryNum >= 1 && categoryNum <= 8) {
-            selectedCategory = categories[categoryNum - 1];
-          } else {
-            selectedCategory = categories.find(cat => 
-              cat.toLowerCase() === message.toLowerCase()
-            ) || '';
-          }
-          
-          if (!selectedCategory) {
-            await sendTelegramMessage('❌ Categoria inválida. Digite um número de 1 a 8 ou o nome da categoria:');
-            return true;
-          }
-          
-          setConversationState(prev => ({
-            ...prev,
-            [chatId]: {
-              step: 'description',
-              data: { ...data, category: selectedCategory }
-            }
-          }));
-          
-          await sendTelegramMessage(
-            `✅ Categoria: *${selectedCategory}*\n\n` +
-            '📝 *Passo 5/6:* Adicione uma descrição (opcional)\n\n' +
+            '📝 *Passo 4/5:* Adicione uma descrição (opcional)\n\n' +
             '_Exemplo: Plano Premium, Conta Familiar, etc._\n' +
             '_Ou digite "pular" para pular esta etapa_',
             'Markdown'
           );
           return true;
+          
+
           
         case 'description':
           const description = message.toLowerCase() === 'pular' ? '' : message.trim();
@@ -1306,7 +1260,7 @@ Mensagem do usuário: "${userMessage}"`;
           
           await sendTelegramMessage(
             `✅ Descrição: *${description || 'Nenhuma'}*\n\n` +
-            '⏰ *Passo 6/6:* Qual é a periodicidade de cobrança?\n\n' +
+            '⏰ *Passo 5/5:* Qual é a periodicidade de cobrança?\n\n' +
             '1️⃣ Mensal\n' +
             '2️⃣ Anual\n\n' +
             '_Digite 1, 2, "mensal" ou "anual"_',
@@ -1345,7 +1299,7 @@ Mensagem do usuário: "${userMessage}"`;
             `📝 *Nome:* ${finalData.name}\n` +
             `💰 *Preço:* R$ ${finalData.price?.toFixed(2)}\n` +
             `📅 *Renovação:* ${new Date(finalData.renewalDate!).toLocaleDateString('pt-BR')}\n` +
-            `🏷️ *Categoria:* ${finalData.category}\n` +
+
             `📝 *Descrição:* ${finalData.description || 'Nenhuma'}\n` +
             `⏰ *Periodicidade:* ${billingPeriod}\n\n` +
             '_A assinatura foi adicionada à sua lista!_',
@@ -1391,7 +1345,7 @@ Mensagem do usuário: "${userMessage}"`;
         message += `${index + 1}. *${sub.name}*\n`;
         message += `   💰 R$ ${sub.price.toFixed(2)} (${sub.billingPeriod})\n`;
         message += `   📅 Renovação: ${renewalDate}\n`;
-        message += `   🏷️ ${sub.category}\n`;
+
         if (sub.description) {
           message += `   📝 ${sub.description}\n`;
         }
@@ -1589,49 +1543,19 @@ Mensagem do usuário: "${userMessage}"`;
           setConversationState(prev => ({
             ...prev,
             [chatId]: {
-              step: 'category',
+              step: 'description',
               data: { ...data, renewalDate: newDate }
             }
           }));
           
           await sendTelegramMessage(
             `✅ Data: *${new Date(newDate).toLocaleDateString('pt-BR')}*\n\n` +
-            `✏️ *Passo 4/6:* Digite a nova categoria ou pressione Enter para manter "${originalData.category}":\n\n` +
-            `_Opções: Streaming, Software, Música, Jogos, Produtividade, Educação, Saúde, Outros_`,
+            `✏️ *Passo 4/5:* Digite a nova descrição ou pressione Enter para manter "${originalData.description || 'Nenhuma'}":`,
             'Markdown'
           );
           return true;
           
-        case 'category':
-          let newCategory = originalData.category;
-          if (message.trim()) {
-            const categories = ['Streaming', 'Software', 'Música', 'Jogos', 'Produtividade', 'Educação', 'Saúde', 'Outros'];
-            const selectedCategory = categories.find(cat => 
-              cat.toLowerCase() === message.toLowerCase()
-            );
-            
-            if (!selectedCategory) {
-              await sendTelegramMessage('❌ Categoria inválida. Use uma das opções válidas ou pressione Enter para manter:');
-              return true;
-            }
-            
-            newCategory = selectedCategory;
-          }
-          
-          setConversationState(prev => ({
-            ...prev,
-            [chatId]: {
-              step: 'description',
-              data: { ...data, category: newCategory }
-            }
-          }));
-          
-          await sendTelegramMessage(
-            `✅ Categoria: *${newCategory}*\n\n` +
-            `✏️ *Passo 5/6:* Digite a nova descrição ou pressione Enter para manter "${originalData.description || 'Nenhuma'}":`,
-            'Markdown'
-          );
-          return true;
+
           
         case 'description':
           const newDescription = message.trim() || originalData.description || '';
@@ -1646,7 +1570,7 @@ Mensagem do usuário: "${userMessage}"`;
           
           await sendTelegramMessage(
             `✅ Descrição: *${newDescription || 'Nenhuma'}*\n\n` +
-            `✏️ *Passo 6/6:* Digite a nova periodicidade ou pressione Enter para manter "${originalData.billingPeriod}":\n\n` +
+            `✏️ *Passo 5/5:* Digite a nova periodicidade ou pressione Enter para manter "${originalData.billingPeriod}":\n\n` +
             `_Opções: mensal, anual_`,
             'Markdown'
           );
@@ -1690,7 +1614,7 @@ Mensagem do usuário: "${userMessage}"`;
             `📝 *Nome:* ${finalData.name}\n` +
             `💰 *Preço:* R$ ${finalData.price?.toFixed(2)}\n` +
             `📅 *Renovação:* ${new Date(finalData.renewalDate!).toLocaleDateString('pt-BR')}\n` +
-            `🏷️ *Categoria:* ${finalData.category}\n` +
+
             `📝 *Descrição:* ${finalData.description || 'Nenhuma'}\n` +
             `⏰ *Periodicidade:* ${newBillingPeriod}\n\n` +
             `_As alterações foram salvas!_`,
