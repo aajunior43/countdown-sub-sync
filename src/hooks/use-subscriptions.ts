@@ -103,6 +103,7 @@ export function useSubscriptions() {
           price: Number(data.price),
           currency: data.currency || 'R$',
           renewal_date: data.renewalDate,
+          category: 'Outros', // TEMPORÁRIO: Remover após aplicar migração SQL
           description: data.description?.trim() || null,
           is_active: true,
           billing_period: data.billingPeriod
@@ -209,6 +210,7 @@ export function useSubscriptions() {
           price: Number(data.price),
           currency: data.currency || 'R$',
           renewal_date: data.renewalDate,
+          category: 'Outros', // TEMPORÁRIO: Remover após aplicar migração SQL
           description: data.description?.trim() || null,
           billing_period: data.billingPeriod
         };
