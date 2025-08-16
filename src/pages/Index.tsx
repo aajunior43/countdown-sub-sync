@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { SubscriptionCard } from "@/components/SubscriptionCard";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
-import { NotificationSettings } from "@/components/NotificationSettings";
-import { TelegramBackup } from "@/components/TelegramBackup";
+
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { ExportImport } from "@/components/ExportImport";
 import UserMenu from "@/components/UserMenu";
 import { Subscription, SubscriptionFormData } from "@/types/subscription";
-import { CreditCard, DollarSign, Calendar, Settings } from "lucide-react";
+import { CreditCard, DollarSign, Calendar } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSubscriptions } from "@/hooks/use-subscriptions";
 import { useNotifications } from "@/hooks/use-notifications";
 
@@ -26,26 +24,7 @@ const Index = () => {
   // Inicializar sistema de notificações
   useNotifications(subscriptions);
 
-  // Função para restaurar backup
-  const handleRestoreBackup = (restoredSubscriptions: Subscription[]) => {
-    // TODO: Implementar restore from backup no Supabase
-    console.log('Restore backup:', restoredSubscriptions);
-  };
 
-  // Função para adicionar assinatura via Telegram
-  const handleAddSubscriptionFromTelegram = (subscriptionData: Omit<Subscription, 'id'>) => {
-    // Convert to SubscriptionFormData format
-    const formData: SubscriptionFormData = {
-      name: subscriptionData.name,
-      price: subscriptionData.price,
-      currency: subscriptionData.currency,
-      renewalDate: subscriptionData.renewalDate,
-      category: subscriptionData.category,
-      description: subscriptionData.description,
-      billingPeriod: subscriptionData.billingPeriod
-    };
-    addSubscription(formData);
-  };
 
   // Add new subscription
   const handleAddSubscription = (data: SubscriptionFormData) => {
@@ -284,64 +263,43 @@ const Index = () => {
             </div>
           </div>
         ) : (
-          <Tabs defaultValue="subscriptions" className="space-y-6">
-             <TabsList className="grid w-full grid-cols-2 bg-black/40 backdrop-blur-xl border-white/20">
-               <TabsTrigger value="subscriptions" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-white/20">
-                 <CreditCard className="h-4 w-4" />
-                 Assinaturas
-               </TabsTrigger>
-               <TabsTrigger value="settings" className="flex items-center gap-2 text-gray-300 data-[state=active]:text-white data-[state=active]:bg-white/20">
-                 <Settings className="h-4 w-4" />
-                 Configurações
-               </TabsTrigger>
-             </TabsList>
+          <div className="space-y-6">
 
-            <TabsContent value="subscriptions" className="space-y-6">
-              {/* Subscriptions Grid */}
-              <section className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-semibold text-white">Suas Assinaturas</h2>
-                  <span className="text-sm text-gray-300">
-                    {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
-                  </span>
+            {/* Subscriptions Grid */}
+            <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-semibold text-white">Suas Assinaturas</h2>
+                <span className="text-sm text-gray-300">
+                  {subscriptions.length} {subscriptions.length === 1 ? 'assinatura' : 'assinaturas'}
+                </span>
+              </div>
+              
+              {subscriptions.length === 0 ? (
+                <div className="text-center py-16">
+                  <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-2xl">
+                    <CreditCard className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-3">
+                    Nenhuma assinatura encontrada
+                  </h3>
+                  <p className="text-gray-300 text-lg max-w-md mx-auto leading-relaxed">
+                    Adicione sua primeira assinatura para começar a gerenciar seus gastos mensais.
+                  </p>
                 </div>
-                
-                {subscriptions.length === 0 ? (
-                  <div className="text-center py-16">
-                    <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-2xl">
-                      <CreditCard className="h-10 w-10 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">
-                      Nenhuma assinatura encontrada
-                    </h3>
-                    <p className="text-gray-300 text-lg max-w-md mx-auto leading-relaxed">
-                      Adicione sua primeira assinatura para começar a gerenciar seus gastos mensais.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {subscriptions.map((subscription) => (
-                      <SubscriptionCard
-                        key={subscription.id}
-                        subscription={subscription}
-                        onEdit={setEditingSubscription}
-                        onDelete={handleDeleteSubscription}
-                      />
-                    ))}
-                  </div>
-                )}
-              </section>
-            </TabsContent>
-
-             <TabsContent value="settings" className="space-y-6">
-                <NotificationSettings subscriptions={subscriptions} />
-                <TelegramBackup 
-                  subscriptions={subscriptions} 
-                  onRestoreBackup={handleRestoreBackup}
-                  onAddSubscription={handleAddSubscriptionFromTelegram}
-                />
-              </TabsContent>
-           </Tabs>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {subscriptions.map((subscription) => (
+                    <SubscriptionCard
+                      key={subscription.id}
+                      subscription={subscription}
+                      onEdit={setEditingSubscription}
+                      onDelete={handleDeleteSubscription}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
         )}
       </main>
       
