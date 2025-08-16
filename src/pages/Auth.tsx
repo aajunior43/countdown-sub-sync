@@ -135,7 +135,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{
-      background: 'linear-gradient(135deg, #0078d4 0%, #106ebe 25%, #005a9e  50%, #004578 75%, #003d6b 100%)',
+      background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d2d 50%, #1a1a1a 75%, #000000 100%)',
       fontFamily: 'Tahoma, sans-serif'
     }}>
       {/* Windows XP Style Background Pattern */}
