@@ -8,6 +8,10 @@ export interface Subscription {
   description?: string;
   isActive: boolean;
   billingPeriod: 'mensal' | 'anual';
+  // Properties for conversation state management
+  pendingConfirmation?: boolean;
+  isEditing?: boolean;
+  editingId?: string;
 }
 
 export interface SubscriptionFormData {
