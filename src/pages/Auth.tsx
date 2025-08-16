@@ -157,30 +157,30 @@ const Auth = () => {
         ))}
         
         {/* Meteors */}
-         {Array.from({ length: 2 }).map((_, i) => {
+         {Array.from({ length: 1 }).map((_, i) => {
            const directions = [
-             { tailAngle: 315, startX: '100vw', startY: '0vh', endX: '0vw', endY: '100vh' }, // Top-right to bottom-left (cauda aponta para cima-direita)
-             { tailAngle: 225, startX: '0vw', startY: '0vh', endX: '100vw', endY: '100vh' }, // Top-left to bottom-right (cauda aponta para cima-esquerda)
-             { tailAngle: 135, startX: '100vw', startY: '100vh', endX: '0vw', endY: '0vh' }, // Bottom-right to top-left (cauda aponta para baixo-direita)
-             { tailAngle: 45, startX: '0vw', startY: '100vh', endX: '100vw', endY: '0vh' }   // Bottom-left to top-right (cauda aponta para baixo-esquerda)
+             { movementAngle: 225, tailAngle: 45 },   // Movimento: ↙️ (225°) → Cauda: ↗️ (45°)
+             { movementAngle: 315, tailAngle: 135 },  // Movimento: ↖️ (315°) → Cauda: ↘️ (135°)
+             { movementAngle: 135, tailAngle: 315 },  // Movimento: ↘️ (135°) → Cauda: ↖️ (315°)
+             { movementAngle: 45, tailAngle: 225 }    // Movimento: ↗️ (45°) → Cauda: ↙️ (225°)
            ];
-           const direction = directions[i % directions.length]; // Usar direções específicas para cada meteoro
-           const tailAngle = direction.tailAngle + (Math.random() - 0.5) * 15; // Pequena variação
+           const direction = directions[Math.floor(Math.random() * directions.length)];
+           const tailAngle = direction.tailAngle + (Math.random() - 0.5) * 10; // Pequena variação
            
            return (
              <div
                key={`meteor-${i}`}
                className="absolute"
                style={{
-                 width: '120px',
+                 width: '100px',
                  height: '1px',
-                 background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.3) 70%, rgba(255,255,255,0.6) 90%, rgba(255,255,255,0.8) 100%)',
+                 background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.2) 70%, rgba(255,255,255,0.4) 90%, rgba(255,255,255,0.6) 100%)',
                  borderRadius: '0.5px',
-                 boxShadow: '0 0 6px 1px rgba(255,255,255,0.3), 0 0 12px 2px rgba(255,255,255,0.1)',
-                 animation: `meteor-${i} ${Math.random() * 15 + 20}s linear infinite`,
-                 animationDelay: `${Math.random() * 15}s`,
+                 boxShadow: '0 0 4px 0.5px rgba(255,255,255,0.2), 0 0 8px 1px rgba(255,255,255,0.05)',
+                 animation: `meteor-0 ${Math.random() * 20 + 30}s linear infinite`,
+                 animationDelay: `${Math.random() * 25}s`,
                  transform: `rotate(${tailAngle}deg)`,
-                 filter: 'blur(0.3px)'
+                 filter: 'blur(0.2px)'
                }}
              />
            );
@@ -332,31 +332,14 @@ const Auth = () => {
          
          @keyframes meteor-0 {
            0% {
-             transform: translateX(100vw) translateY(-20vh);
-             opacity: 0;
-           }
-           5% {
-             opacity: 0.8;
-           }
-           95% {
-             opacity: 0.8;
-           }
-           100% {
-             transform: translateX(-20vw) translateY(120vh);
-             opacity: 0;
-           }
-         }
-         
-         @keyframes meteor-1 {
-           0% {
              transform: translateX(-20vw) translateY(-20vh);
              opacity: 0;
            }
-           5% {
-             opacity: 0.8;
+           3% {
+             opacity: 0.6;
            }
-           95% {
-             opacity: 0.8;
+           97% {
+             opacity: 0.6;
            }
            100% {
              transform: translateX(120vw) translateY(120vh);
