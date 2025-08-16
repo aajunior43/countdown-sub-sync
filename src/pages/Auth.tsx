@@ -157,22 +157,30 @@ const Auth = () => {
         ))}
         
         {/* Meteors */}
-         {Array.from({ length: 3 }).map((_, i) => {
-           const tailAngle = 45 + (Math.random() - 0.5) * 30; // Variação de ±15° do ângulo de movimento
+         {Array.from({ length: 2 }).map((_, i) => {
+           const directions = [
+             { angle: 135, startX: '100vw', startY: '0vh', endX: '0vw', endY: '100vh' }, // Top-right to bottom-left
+             { angle: 45, startX: '0vw', startY: '0vh', endX: '100vw', endY: '100vh' },   // Top-left to bottom-right
+             { angle: 225, startX: '100vw', startY: '100vh', endX: '0vw', endY: '0vh' }, // Bottom-right to top-left
+             { angle: 315, startX: '0vw', startY: '100vh', endX: '100vw', endY: '0vh' }  // Bottom-left to top-right
+           ];
+           const direction = directions[Math.floor(Math.random() * directions.length)];
+           const tailAngle = direction.angle + (Math.random() - 0.5) * 20;
+           
            return (
              <div
                key={`meteor-${i}`}
                className="absolute"
                style={{
-                 width: '80px',
-                 height: '3px',
-                 background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.9) 85%, rgba(255,255,255,1) 100%)',
-                 borderRadius: '1.5px',
-                 boxShadow: '0 0 12px 3px rgba(255,255,255,0.5), 0 0 25px 6px rgba(255,255,255,0.2)',
-                 animation: `meteor ${Math.random() * 10 + 15}s linear infinite`,
-                 animationDelay: `${Math.random() * 10}s`,
+                 width: '120px',
+                 height: '1px',
+                 background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 30%, rgba(255,255,255,0.3) 70%, rgba(255,255,255,0.6) 90%, rgba(255,255,255,0.8) 100%)',
+                 borderRadius: '0.5px',
+                 boxShadow: '0 0 6px 1px rgba(255,255,255,0.3), 0 0 12px 2px rgba(255,255,255,0.1)',
+                 animation: `meteor-${i} ${Math.random() * 15 + 20}s linear infinite`,
+                 animationDelay: `${Math.random() * 15}s`,
                  transform: `rotate(${tailAngle}deg)`,
-                 filter: 'blur(0.5px)'
+                 filter: 'blur(0.3px)'
                }}
              />
            );
@@ -322,19 +330,36 @@ const Auth = () => {
            100% { opacity: 0.2; transform: scale(1); }
          }
          
-         @keyframes meteor {
+         @keyframes meteor-0 {
            0% {
-             transform: translateX(-100vw) translateY(-100vh) rotate(45deg);
+             transform: translateX(100vw) translateY(-20vh);
              opacity: 0;
            }
-           10% {
-             opacity: 1;
+           5% {
+             opacity: 0.8;
            }
-           90% {
-             opacity: 1;
+           95% {
+             opacity: 0.8;
            }
            100% {
-             transform: translateX(100vw) translateY(100vh) rotate(45deg);
+             transform: translateX(-20vw) translateY(120vh);
+             opacity: 0;
+           }
+         }
+         
+         @keyframes meteor-1 {
+           0% {
+             transform: translateX(-20vw) translateY(-20vh);
+             opacity: 0;
+           }
+           5% {
+             opacity: 0.8;
+           }
+           95% {
+             opacity: 0.8;
+           }
+           100% {
+             transform: translateX(120vw) translateY(120vh);
              opacity: 0;
            }
          }
