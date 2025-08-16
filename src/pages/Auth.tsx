@@ -396,15 +396,12 @@ const Auth = () => {
           </div>
           
           {/* Windows XP Footer */}
-          <div className="mt-6 pt-4 border-t border-gray-400 text-center">
-            <p className="text-xs text-gray-600" style={{ fontFamily: 'Tahoma, sans-serif' }}>
-              💻 Sistema compatível com Windows XP • Versão 2.0.1
-            </p>
-            <div className="flex justify-center items-center gap-2 mt-2">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span className="text-xs text-gray-600" style={{ fontFamily: 'Tahoma, sans-serif' }}>Conectado</span>
-            </div>
-          </div>
+           <div className="mt-6 pt-4 border-t border-gray-400 text-center">
+             <div className="flex justify-center items-center gap-2 mt-2">
+               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+               <span className="text-xs text-gray-600" style={{ fontFamily: 'Tahoma, sans-serif' }}>Conectado</span>
+             </div>
+           </div>
         </div>
       </div>
     </div>
