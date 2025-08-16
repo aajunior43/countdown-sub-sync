@@ -6,7 +6,7 @@ CREATE TABLE public.subscriptions (
   price DECIMAL(10,2) NOT NULL,
   currency TEXT NOT NULL DEFAULT 'BRL',
   renewal_date TIMESTAMP WITH TIME ZONE NOT NULL,
-  category TEXT NOT NULL,
+
   description TEXT,
   is_active BOOLEAN NOT NULL DEFAULT true,
   billing_period TEXT NOT NULL CHECK (billing_period IN ('mensal', 'anual')),
