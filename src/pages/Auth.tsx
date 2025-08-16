@@ -145,19 +145,17 @@ const Auth = () => {
       
       {/* Windows XP Login Box */}
       <div className="relative w-full max-w-md" style={{
-        background: 'linear-gradient(180deg, #f0f0f0 0%, #e8e8e8 50%, #d0d0d0 100%)',
-        border: '2px outset #c0c0c0',
-        borderRadius: '8px',
-        boxShadow: '4px 4px 8px rgba(0,0,0,0.3)'
-      }}>
+         background: 'linear-gradient(180deg, #f0f0f0 0%, #e8e8e8 50%, #d0d0d0 100%)',
+         border: '2px outset #c0c0c0',
+         boxShadow: '4px 4px 8px rgba(0,0,0,0.3)'
+       }}>
         {/* Title Bar */}
         <div className="flex items-center justify-between p-2" style={{
-          background: 'linear-gradient(180deg, #0078d4 0%, #005a9e 100%)',
-          borderRadius: '6px 6px 0 0',
-          borderBottom: '1px solid #003d6b'
-        }}>
+           background: 'linear-gradient(180deg, #0078d4 0%, #005a9e 100%)',
+           borderBottom: '1px solid #003d6b'
+         }}>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-white rounded-sm flex items-center justify-center text-xs font-bold text-blue-600">🔐</div>
+            <div className="w-4 h-4 bg-white flex items-center justify-center text-xs font-bold text-blue-600">🔐</div>
             <span className="text-white text-sm font-bold">Login do Sistema</span>
           </div>
           <div className="flex gap-1">
@@ -187,11 +185,10 @@ const Auth = () => {
           {/* Windows XP Logo Area */}
           <div className="text-center mb-6">
             <div className="inline-flex items-center justify-center w-16 h-16 mb-3" style={{
-              background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd100 100%)',
-              border: '2px outset #ffd100',
-              borderRadius: '8px',
-              boxShadow: 'inset 1px 1px 2px rgba(255,255,255,0.5)'
-            }}>
+               background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd100 100%)',
+               border: '2px outset #ffd100',
+               boxShadow: 'inset 1px 1px 2px rgba(255,255,255,0.5)'
+             }}>
               <span className="text-2xl font-bold text-white">📊</span>
             </div>
             <h1 className="text-xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Tahoma, sans-serif' }}>
@@ -205,7 +202,7 @@ const Auth = () => {
              <div className="flex border-b border-gray-400">
                <button 
                  onClick={() => setActiveTab('signin')}
-                 className={`px-4 py-2 text-sm font-medium border-t border-l border-r rounded-t-lg ${
+                 className={`px-4 py-2 text-sm font-medium border-t border-l border-r ${
                    activeTab === 'signin' 
                      ? 'bg-white border-gray-400 text-gray-800 -mb-px' 
                      : 'bg-gray-200 border-gray-300 text-gray-600'
@@ -219,7 +216,7 @@ const Auth = () => {
                </button>
                <button 
                  onClick={() => setActiveTab('signup')}
-                 className={`px-4 py-2 text-sm font-medium border-t border-l border-r rounded-t-lg ${
+                 className={`px-4 py-2 text-sm font-medium border-t border-l border-r ${
                    activeTab === 'signup' 
                      ? 'bg-white border-gray-400 text-gray-800 -mb-px' 
                      : 'bg-gray-200 border-gray-300 text-gray-600'
@@ -250,11 +247,10 @@ const Auth = () => {
                     required
                     className="w-full px-3 py-2 text-sm"
                     style={{
-                      border: '2px inset #c0c0c0',
-                      borderRadius: '2px',
-                      fontFamily: 'Tahoma, sans-serif',
-                      backgroundColor: 'white'
-                    }}
+                       border: '2px inset #c0c0c0',
+                       fontFamily: 'Tahoma, sans-serif',
+                       backgroundColor: 'white'
+                     }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -270,22 +266,20 @@ const Auth = () => {
                       required
                       className="w-full px-3 py-2 text-sm pr-10"
                       style={{
-                        border: '2px inset #c0c0c0',
-                        borderRadius: '2px',
-                        fontFamily: 'Tahoma, sans-serif',
-                        backgroundColor: 'white'
-                      }}
+                         border: '2px inset #c0c0c0',
+                         fontFamily: 'Tahoma, sans-serif',
+                         backgroundColor: 'white'
+                       }}
                     />
                     <button
                       type="button"
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 flex items-center justify-center"
                       onClick={() => setShowPassword(!showPassword)}
                       style={{
-                        border: '1px outset #c0c0c0',
-                        borderRadius: '2px',
-                        backgroundColor: '#f0f0f0',
-                        fontSize: '10px'
-                      }}
+                         border: '1px outset #c0c0c0',
+                         backgroundColor: '#f0f0f0',
+                         fontSize: '10px'
+                       }}
                     >
                       {showPassword ? '🙈' : '👁️'}
                     </button>
@@ -296,13 +290,12 @@ const Auth = () => {
                   disabled={loading}
                   className="w-full py-3 text-sm font-bold text-white mt-6"
                   style={{
-                    background: loading ? '#cccccc' : 'linear-gradient(180deg, #4CAF50 0%, #45a049 50%, #3d8b40 100%)',
-                    border: '2px outset #4CAF50',
-                    borderRadius: '4px',
-                    fontFamily: 'Tahoma, sans-serif',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    boxShadow: '1px 1px 2px rgba(0,0,0,0.3)'
-                  }}
+                     background: loading ? '#cccccc' : 'linear-gradient(180deg, #4CAF50 0%, #45a049 50%, #3d8b40 100%)',
+                     border: '2px outset #4CAF50',
+                     fontFamily: 'Tahoma, sans-serif',
+                     cursor: loading ? 'not-allowed' : 'pointer',
+                     boxShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+                   }}
                   onMouseDown={(e) => {
                     if (!loading) {
                       e.currentTarget.style.border = '2px inset #4CAF50';
@@ -335,11 +328,10 @@ const Auth = () => {
                     required
                     className="w-full px-3 py-2 text-sm"
                     style={{
-                      border: '2px inset #c0c0c0',
-                      borderRadius: '2px',
-                      fontFamily: 'Tahoma, sans-serif',
-                      backgroundColor: 'white'
-                    }}
+                       border: '2px inset #c0c0c0',
+                       fontFamily: 'Tahoma, sans-serif',
+                       backgroundColor: 'white'
+                     }}
                   />
                 </div>
                 <div className="space-y-2">
@@ -356,22 +348,20 @@ const Auth = () => {
                       minLength={6}
                       className="w-full px-3 py-2 text-sm pr-10"
                       style={{
-                        border: '2px inset #c0c0c0',
-                        borderRadius: '2px',
-                        fontFamily: 'Tahoma, sans-serif',
-                        backgroundColor: 'white'
-                      }}
+                         border: '2px inset #c0c0c0',
+                         fontFamily: 'Tahoma, sans-serif',
+                         backgroundColor: 'white'
+                       }}
                     />
                     <button
                       type="button"
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 flex items-center justify-center"
                       onClick={() => setShowPassword(!showPassword)}
                       style={{
-                        border: '1px outset #c0c0c0',
-                        borderRadius: '2px',
-                        backgroundColor: '#f0f0f0',
-                        fontSize: '10px'
-                      }}
+                         border: '1px outset #c0c0c0',
+                         backgroundColor: '#f0f0f0',
+                         fontSize: '10px'
+                       }}
                     >
                       {showPassword ? '🙈' : '👁️'}
                     </button>
@@ -385,13 +375,12 @@ const Auth = () => {
                   disabled={loading}
                   className="w-full py-3 text-sm font-bold text-white mt-6"
                   style={{
-                    background: loading ? '#cccccc' : 'linear-gradient(180deg, #2196F3 0%, #1976D2 50%, #1565C0 100%)',
-                    border: '2px outset #2196F3',
-                    borderRadius: '4px',
-                    fontFamily: 'Tahoma, sans-serif',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    boxShadow: '1px 1px 2px rgba(0,0,0,0.3)'
-                  }}
+                     background: loading ? '#cccccc' : 'linear-gradient(180deg, #2196F3 0%, #1976D2 50%, #1565C0 100%)',
+                     border: '2px outset #2196F3',
+                     fontFamily: 'Tahoma, sans-serif',
+                     cursor: loading ? 'not-allowed' : 'pointer',
+                     boxShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+                   }}
                   onMouseDown={(e) => {
                     if (!loading) {
                       e.currentTarget.style.border = '2px inset #2196F3';
