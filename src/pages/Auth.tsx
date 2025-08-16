@@ -157,22 +157,26 @@ const Auth = () => {
         ))}
         
         {/* Meteors */}
-         {Array.from({ length: 3 }).map((_, i) => (
-           <div
-             key={`meteor-${i}`}
-             className="absolute"
-             style={{
-               width: '60px',
-               height: '2px',
-               background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 30%, rgba(255,255,255,0.8) 70%, rgba(255,255,255,1) 100%)',
-               borderRadius: '1px',
-               boxShadow: '0 0 10px 2px rgba(255,255,255,0.6), 0 0 20px 4px rgba(255,255,255,0.3)',
-               animation: `meteor ${Math.random() * 10 + 15}s linear infinite`,
-               animationDelay: `${Math.random() * 10}s`,
-               transform: 'rotate(45deg)'
-             }}
-           />
-         ))}
+         {Array.from({ length: 3 }).map((_, i) => {
+           const tailAngle = 45 + (Math.random() - 0.5) * 30; // Variação de ±15° do ângulo de movimento
+           return (
+             <div
+               key={`meteor-${i}`}
+               className="absolute"
+               style={{
+                 width: '80px',
+                 height: '3px',
+                 background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.6) 60%, rgba(255,255,255,0.9) 85%, rgba(255,255,255,1) 100%)',
+                 borderRadius: '1.5px',
+                 boxShadow: '0 0 12px 3px rgba(255,255,255,0.5), 0 0 25px 6px rgba(255,255,255,0.2)',
+                 animation: `meteor ${Math.random() * 10 + 15}s linear infinite`,
+                 animationDelay: `${Math.random() * 10}s`,
+                 transform: `rotate(${tailAngle}deg)`,
+                 filter: 'blur(0.5px)'
+               }}
+             />
+           );
+         })}
       </div>
       
       {/* X-style Login Container */}
