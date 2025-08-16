@@ -161,10 +161,25 @@ const Auth = () => {
             <span className="text-white text-sm font-bold">Login do Sistema</span>
           </div>
           <div className="flex gap-1">
-            <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded-sm"></div>
-            <div className="w-4 h-4 bg-gray-300 border border-gray-400 rounded-sm"></div>
-            <div className="w-4 h-4 bg-red-500 border border-red-600 rounded-sm"></div>
-          </div>
+             {/* Minimizar */}
+             <div className="w-5 h-4 bg-gray-200 border border-gray-400 flex items-center justify-center text-xs font-bold text-gray-700" style={{
+               borderStyle: 'outset',
+               borderWidth: '1px',
+               backgroundColor: '#e0e0e0'
+             }}>_</div>
+             {/* Maximizar */}
+             <div className="w-5 h-4 bg-gray-200 border border-gray-400 flex items-center justify-center text-xs font-bold text-gray-700" style={{
+               borderStyle: 'outset',
+               borderWidth: '1px',
+               backgroundColor: '#e0e0e0'
+             }}>□</div>
+             {/* Fechar */}
+             <div className="w-5 h-4 bg-red-400 border border-red-500 flex items-center justify-center text-xs font-bold text-white" style={{
+               borderStyle: 'outset',
+               borderWidth: '1px',
+               backgroundColor: '#dc3545'
+             }}>×</div>
+           </div>
         </div>
         
         {/* Content Area */}
