@@ -183,19 +183,12 @@ const Auth = () => {
         {/* Content Area */}
         <div className="p-6">
           {/* Windows XP Logo Area */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center justify-center w-16 h-16 mb-3" style={{
-               background: 'linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd100 100%)',
-               border: '2px outset #ffd100',
-               boxShadow: 'inset 1px 1px 2px rgba(255,255,255,0.5)'
-             }}>
-              <span className="text-2xl font-bold text-white">📊</span>
-            </div>
-            <h1 className="text-xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Tahoma, sans-serif' }}>
-              Minhas Assinaturas
-            </h1>
-            <p className="text-sm text-gray-600">Sistema de Gerenciamento v2.0</p>
-          </div>
+           <div className="text-center mb-6">
+             <h1 className="text-xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+               Minhas Assinaturas
+             </h1>
+             <p className="text-sm text-gray-600">Sistema de Gerenciamento v2.0</p>
+           </div>
           
           {/* Windows XP Style Tabs */}
            <div className="mb-4">
