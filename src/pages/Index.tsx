@@ -168,69 +168,46 @@ const Index = () => {
       </header>
 
       <main className="relative z-10 container mx-auto px-6 py-10">
-        {/* Enhanced Statistics Cards */}
-        <section className="space-y-6">
-          <div className="text-center space-y-2">
-            <h2 className="text-2xl font-semibold text-white">Visão Geral</h2>
-            <p className="text-gray-300">Acompanhe suas métricas importantes</p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Card className="bg-black/40 backdrop-blur-xl border-white/20 shadow-2xl">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Total Mensal
-                </CardTitle>
-                <DollarSign className="h-6 w-6 text-green-400" />
-              </CardHeader>
-              <CardContent className="space-y-1">
-                <div className="text-3xl font-bold text-white">
-                  R$ {totalMonthlySpending.toFixed(2)}
+        {/* Compact Statistics */}
+        <section className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <Card className="bg-black/40 backdrop-blur-xl border-white/20">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-400 uppercase tracking-wide">Total</p>
+                    <p className="text-lg font-bold text-white">R$ {totalMonthlySpending.toFixed(2)}</p>
+                  </div>
+                  <DollarSign className="h-4 w-4 text-green-400" />
                 </div>
-                <p className="text-xs text-gray-400">
-                  Gastos recorrentes mensais
-                </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-black/40 backdrop-blur-xl border-white/20 shadow-2xl">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Assinaturas Ativas
-                </CardTitle>
-                <CreditCard className="h-6 w-6 text-blue-400" />
-              </CardHeader>
-              <CardContent className="space-y-1">
-                <div className="text-3xl font-bold text-white">
-                  {activeSubscriptions}
+            <Card className="bg-black/40 backdrop-blur-xl border-white/20">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-400 uppercase tracking-wide">Ativas</p>
+                    <p className="text-lg font-bold text-white">{activeSubscriptions}</p>
+                  </div>
+                  <CreditCard className="h-4 w-4 text-blue-400" />
                 </div>
-                <p className="text-xs text-gray-400">
-                  Serviços ativos atualmente
-                </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-black/40 backdrop-blur-xl border-white/20 shadow-2xl">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Renovações (7 dias)
-                </CardTitle>
-                <Calendar className="h-6 w-6 text-orange-400" />
-              </CardHeader>
-              <CardContent className="space-y-1">
-                <div className="text-3xl font-bold text-white">
-                  {upcomingRenewals}
+            <Card className="bg-black/40 backdrop-blur-xl border-white/20">
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-400 uppercase tracking-wide">Próximas</p>
+                    <p className="text-lg font-bold text-white">{upcomingRenewals}</p>
+                  </div>
+                  <Calendar className="h-4 w-4 text-orange-400" />
                 </div>
-                <p className="text-xs text-gray-400">
-                  Vencimentos próximos
-                </p>
               </CardContent>
             </Card>
           </div>
         </section>
-
-        {/* Section Divider */}
-        <div className="section-divider" />
 
         {/* Edit Form */}
         {editingSubscription && (
