@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SubscriptionCard } from "@/components/SubscriptionCard";
 import { SubscriptionForm } from "@/components/SubscriptionForm";
-
-
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { TelegramBackup } from "@/components/TelegramBackup";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -11,11 +9,17 @@ import { Subscription, SubscriptionFormData } from "@/types/subscription";
 import { CreditCard, DollarSign, Calendar, Settings } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import useLocalStorage from "@/hooks/use-local-storage";
+import { useSubscriptions } from "@/hooks/use-subscriptions";
 import { useNotifications } from "@/hooks/use-notifications";
 
 const Index = () => {
-  const [subscriptions, setSubscriptions] = useLocalStorage<Subscription[]>('subscriptions', []);
+  const { 
+    subscriptions, 
+    loading, 
+    addSubscription, 
+    updateSubscription, 
+    deleteSubscription 
+  } = useSubscriptions();
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
 
   // Inicializar sistema de notificações
@@ -23,59 +27,46 @@ const Index = () => {
 
   // Função para restaurar backup
   const handleRestoreBackup = (restoredSubscriptions: Subscription[]) => {
-    setSubscriptions(restoredSubscriptions);
+    // TODO: Implementar restore from backup no Supabase
+    console.log('Restore backup:', restoredSubscriptions);
   };
 
   // Função para adicionar assinatura via Telegram
   const handleAddSubscriptionFromTelegram = (subscriptionData: Omit<Subscription, 'id'>) => {
-    const newSubscription: Subscription = {
-      ...subscriptionData,
-      id: generateId(),
+    // Convert to SubscriptionFormData format
+    const formData: SubscriptionFormData = {
+      name: subscriptionData.name,
+      price: subscriptionData.price,
+      currency: subscriptionData.currency,
+      renewalDate: subscriptionData.renewalDate,
+      category: subscriptionData.category,
+      description: subscriptionData.description,
+      billingPeriod: subscriptionData.billingPeriod
     };
-    setSubscriptions(prev => [...prev, newSubscription]);
-  };
-
-  // Generate unique ID for new subscriptions
-  const generateId = () => {
-    return `sub_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    addSubscription(formData);
   };
 
   // Add new subscription
   const handleAddSubscription = (data: SubscriptionFormData) => {
-    const newSubscription: Subscription = {
-      ...data,
-      id: generateId(),
-      isActive: true,
-    };
-    setSubscriptions([...subscriptions, newSubscription]);
+    addSubscription(data);
   };
 
   // Edit subscription
   const handleEditSubscription = (data: SubscriptionFormData) => {
     if (!editingSubscription) return;
-    
-    const updatedSubscriptions = subscriptions.map(sub =>
-      sub.id === editingSubscription.id
-        ? { ...sub, ...data }
-        : sub
-    );
-    setSubscriptions(updatedSubscriptions);
+    updateSubscription(editingSubscription.id, data);
     setEditingSubscription(null);
   };
 
   // Delete subscription
   const handleDeleteSubscription = (id: string) => {
-    setSubscriptions(subscriptions.filter(sub => sub.id !== id));
+    deleteSubscription(id);
   };
 
   // Import subscriptions
   const handleImportSubscriptions = (importedSubscriptions: Subscription[]) => {
-    // Adiciona IDs únicos para assinaturas importadas que não possuem
-    const subscriptionsWithIds = importedSubscriptions.map(sub => ({
-      ...sub,
-      id: sub.id || generateId()
-    }));
-    setSubscriptions(subscriptionsWithIds);
+    // TODO: Implementar import no Supabase
+    console.log('Import subscriptions:', importedSubscriptions);
   };
 
   // Calculate statistics
