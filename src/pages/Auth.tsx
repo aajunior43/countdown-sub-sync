@@ -157,21 +157,22 @@ const Auth = () => {
         ))}
         
         {/* Meteors */}
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div
-            key={`meteor-${i}`}
-            className="absolute"
-            style={{
-              width: '2px',
-              height: '2px',
-              background: 'linear-gradient(45deg, #fff, transparent)',
-              borderRadius: '50%',
-              boxShadow: '0 0 6px 2px rgba(255,255,255,0.8)',
-              animation: `meteor ${Math.random() * 10 + 15}s linear infinite`,
-              animationDelay: `${Math.random() * 10}s`
-            }}
-          />
-        ))}
+         {Array.from({ length: 3 }).map((_, i) => (
+           <div
+             key={`meteor-${i}`}
+             className="absolute"
+             style={{
+               width: '60px',
+               height: '2px',
+               background: 'linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 30%, rgba(255,255,255,0.8) 70%, rgba(255,255,255,1) 100%)',
+               borderRadius: '1px',
+               boxShadow: '0 0 10px 2px rgba(255,255,255,0.6), 0 0 20px 4px rgba(255,255,255,0.3)',
+               animation: `meteor ${Math.random() * 10 + 15}s linear infinite`,
+               animationDelay: `${Math.random() * 10}s`,
+               transform: 'rotate(45deg)'
+             }}
+           />
+         ))}
       </div>
       
       {/* X-style Login Container */}
@@ -310,30 +311,30 @@ const Auth = () => {
       </div>
       
       {/* CSS Animations */}
-      <style jsx>{`
-        @keyframes twinkle {
-          0% { opacity: 0.2; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.2); }
-          100% { opacity: 0.2; transform: scale(1); }
-        }
-        
-        @keyframes meteor {
-          0% {
-            transform: translateX(-100vw) translateY(-100vh) rotate(45deg);
-            opacity: 0;
-          }
-          10% {
-            opacity: 1;
-          }
-          90% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateX(100vw) translateY(100vh) rotate(45deg);
-            opacity: 0;
-          }
-        }
-      `}</style>
+       <style>{`
+         @keyframes twinkle {
+           0% { opacity: 0.2; transform: scale(1); }
+           50% { opacity: 1; transform: scale(1.2); }
+           100% { opacity: 0.2; transform: scale(1); }
+         }
+         
+         @keyframes meteor {
+           0% {
+             transform: translateX(-100vw) translateY(-100vh) rotate(45deg);
+             opacity: 0;
+           }
+           10% {
+             opacity: 1;
+           }
+           90% {
+             opacity: 1;
+           }
+           100% {
+             transform: translateX(100vw) translateY(100vh) rotate(45deg);
+             opacity: 0;
+           }
+         }
+       `}</style>
     </div>
   );
 };
