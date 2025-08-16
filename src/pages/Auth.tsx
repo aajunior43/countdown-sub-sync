@@ -187,7 +187,6 @@ const Auth = () => {
              <h1 className="text-xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Tahoma, sans-serif' }}>
                Minhas Assinaturas
              </h1>
-             <p className="text-sm text-gray-600">Sistema de Gerenciamento v2.0</p>
            </div>
           
           {/* Windows XP Style Tabs */}
